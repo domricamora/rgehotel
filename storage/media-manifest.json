@@ -76,7 +76,9 @@
         "kalanggaman": "general\/kalanggaman",
         "aerial": "general\/aerial",
         "sunset": "general\/sunset",
-        "offers-hero": "general\/offers-hero"
+        "offers-hero": "general\/offers-hero",
+        "about": "general\/about",
+        "services-hero": "general\/services-hero"
     },
     "logo": "general\/logo",
     "offers": {

@@ -5,7 +5,7 @@ $labels = ['island_hopping'=>'Island Hopping','tour'=>'Tour','diving'=>'Diving',
 <?= partial('partials.page-hero', [
     'pageTitle' => 'Tours & Services',
     'pageSub'   => 'Kalanggaman Island hopping, Leyte heritage tours, diving, water sports and more — all arranged by our team.',
-    'heroImage' => 'general/aerial',
+    'heroImage' => 'general/services-hero',
     'crumbs'    => ['Tours & Services' => null],
 ]) ?>
 <section class="section">

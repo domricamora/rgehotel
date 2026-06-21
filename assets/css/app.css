@@ -128,6 +128,8 @@ p { color: var(--slate); }
 .hero__video {
   position: absolute; inset: 0; z-index: -2;
   width: 100%; height: 100%; object-fit: cover;
+  /* Color grade: lift brightness + saturation so the footage feels vivid and sunlit. */
+  filter: brightness(1.12) saturate(1.35);
 }
 @media (prefers-reduced-motion: reduce) { .hero__bg, .page-hero__bg { animation: none; } .hero__video { display: none; } }
 .hero::after {

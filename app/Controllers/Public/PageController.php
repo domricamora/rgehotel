@@ -12,7 +12,7 @@ class PageController extends Controller
         return $this->view('public.page', [
             'active' => 'about',
             'page'   => $page,
-            'heroImage' => 'general/aerial',
+            'heroImage' => 'general/about',
             'title'  => $page['meta_title'] ?? 'About RGE Hotel',
             'metaDescription' => $page['meta_description'] ?? null,
         ]);
