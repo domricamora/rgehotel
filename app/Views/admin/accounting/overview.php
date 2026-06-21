@@ -21,7 +21,7 @@ $maxDaily = 0; foreach ($daily as $d) $maxDaily = max($maxDaily, (float)$d['tota
     <div style="display:flex;align-items:flex-end;gap:6px;height:160px;overflow-x:auto;padding-top:10px">
       <?php foreach ($daily as $d): $h = $maxDaily ? max(4, ($d['total']/$maxDaily)*150) : 4; ?>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:30px" title="<?= e($d['d']) ?>: <?= money($d['total']) ?>">
-          <div style="width:22px;height:<?= (int)$h ?>px;background:linear-gradient(180deg,#0e7c86,#0a5b63);border-radius:5px 5px 0 0"></div>
+          <div style="width:22px;height:<?= (int)$h ?>px;background:linear-gradient(180deg,#6a7548,#4d5733);border-radius:0"></div>
           <span style="font-size:.62rem;color:#7c9197;white-space:nowrap"><?= e(date('M j', strtotime($d['d']))) ?></span>
         </div>
       <?php endforeach; ?>

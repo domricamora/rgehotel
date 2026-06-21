@@ -26,7 +26,7 @@
   </div>
   <?php if ($photos): ?>
   <div class="panel"><div class="panel__head"><h2>Photos</h2></div><div class="panel__body"><div class="pill-row">
-    <?php foreach ($photos as $ph): ?><img src="<?= e(img_url($ph['filename'],'thumb')) ?>" alt="" style="width:120px;height:90px;object-fit:cover;border-radius:10px;border:<?= $ph['is_cover']?'2px solid var(--teal)':'1px solid var(--line)' ?>"><?php endforeach; ?>
+    <?php foreach ($photos as $ph): ?><img src="<?= e(img_url($ph['filename'],'thumb')) ?>" alt="" style="width:120px;height:90px;object-fit:cover;border-radius:0;border:<?= $ph['is_cover']?'2px solid var(--teal)':'1px solid var(--line)' ?>"><?php endforeach; ?>
   </div><p class="muted mt-2" style="font-size:.82rem">Photo upload management coming in the next iteration. Bordered image is the cover.</p></div></div>
   <?php endif; ?>
   <div class="row-actions"><button class="btn btn-primary" type="submit"><?= icon('check') ?> Save changes</button><a class="btn btn-outline" href="<?= e(url('/admin/rooms')) ?>">Cancel</a></div>

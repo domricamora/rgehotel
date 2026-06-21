@@ -9,7 +9,7 @@
   <div class="container">
     <div class="grid grid-2">
       <?php foreach ($offers as $o): ?>
-      <article class="card reveal" style="border-color:#ffe3d6">
+      <article class="card reveal" style="border-color:#e9d8c5">
         <?php if ($o['image']): ?><div class="card__media"><?= img_tag($o['image'], $o['title']) ?>
           <span class="card__badge" style="background:var(--coral);color:#fff"><?= $o['discount_type']==='percent' ? (int)$o['discount_value'].'% OFF' : money($o['discount_value']).' OFF' ?></span></div><?php endif; ?>
         <div class="card__body">

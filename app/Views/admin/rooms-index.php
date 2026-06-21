@@ -7,7 +7,7 @@
       <tbody>
         <?php foreach ($rooms as $r): ?>
         <tr>
-          <td style="width:64px"><img src="<?= e(img_url($r['cover'] ?? null,'thumb')) ?>" alt="" style="width:56px;height:42px;object-fit:cover;border-radius:8px"></td>
+          <td style="width:64px"><img src="<?= e(img_url($r['cover'] ?? null,'thumb')) ?>" alt="" style="width:56px;height:42px;object-fit:cover;border-radius:0"></td>
           <td><strong><?= e($r['name']) ?></strong><div class="muted" style="font-size:.8rem"><?= e($r['slug']) ?></div></td>
           <td><?= money($r['base_price']) ?></td>
           <td><?= (int)$r['max_occupancy'] ?></td>

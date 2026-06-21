@@ -129,12 +129,12 @@ $heroImg = Setting::get('hero_image', 'general/hero-island');
     <div class="section-head center"><span class="eyebrow">Limited Time</span><h2>Ongoing offers</h2></div>
     <div class="grid grid-3">
       <?php foreach ($offers as $o): ?>
-      <article class="card reveal" style="background:linear-gradient(135deg,#fff,#fff);border-color:#ffe3d6">
+      <article class="card reveal" style="background:linear-gradient(135deg,#fff,#fff);border-color:#e9d8c5">
         <div class="card__body">
-          <span class="chip" style="background:#fff0e9;color:var(--coral-deep)"><?= icon('percent','',15) ?> <?= $o['discount_type']==='percent' ? (int)$o['discount_value'].'% OFF' : money($o['discount_value']).' OFF' ?></span>
+          <span class="chip" style="background:#f6ece2;color:var(--coral-deep)"><?= icon('percent','',15) ?> <?= $o['discount_type']==='percent' ? (int)$o['discount_value'].'% OFF' : money($o['discount_value']).' OFF' ?></span>
           <h3><?= e($o['title']) ?></h3>
           <p style="font-size:.95rem"><?= e($o['subtitle']) ?></p>
-          <?php if ($o['code']): ?><p class="mt-2"><strong>Code:</strong> <code style="background:var(--sand);padding:3px 8px;border-radius:6px"><?= e($o['code']) ?></code></p><?php endif; ?>
+          <?php if ($o['code']): ?><p class="mt-2"><strong>Code:</strong> <code style="background:var(--sand);padding:3px 8px;border-radius:0"><?= e($o['code']) ?></code></p><?php endif; ?>
           <div class="card__foot"><a class="btn btn-primary btn-sm" href="<?= e(url('/accommodations')) ?>">Book &amp; save</a></div>
         </div>
       </article>
@@ -171,7 +171,7 @@ $heroImg = Setting::get('hero_image', 'general/hero-island');
 <!-- CTA -->
 <section class="section tone-ink" id="newsletter">
   <div class="container center">
-    <span class="eyebrow" style="color:#7fd6dc">Your island escape awaits</span>
+    <span class="eyebrow" style="color:#cbb88c">Your island escape awaits</span>
     <h2>Ready to wake up by the sea?</h2>
     <p style="max-width:46ch;margin:12px auto 0">Reserve your room at RGE Hotel and start planning your Kalanggaman adventure today.</p>
     <div class="mt-4 flex items-center gap-2 wrap" style="justify-content:center">

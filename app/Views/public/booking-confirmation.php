@@ -6,7 +6,7 @@ $paid = $booking['payment_status'] === 'paid';
     <?= partial('partials.flash') ?>
     <div class="card" style="text-align:center;padding:8px">
       <div class="card__body" style="align-items:center">
-        <div class="ico" style="width:68px;height:68px;border-radius:50%;background:var(--teal-soft);color:var(--teal-deep);display:grid;place-items:center;margin-bottom:8px"><?= icon('check','',32) ?></div>
+        <div class="ico" style="width:68px;height:68px;border-radius:0;background:var(--teal-soft);color:var(--teal-deep);display:grid;place-items:center;margin-bottom:8px"><?= icon('check','',32) ?></div>
         <span class="eyebrow"><?= $paid ? 'Payment received' : 'Reservation held' ?></span>
         <h1 style="font-size:2rem"><?= $paid ? 'Booking confirmed!' : 'Almost there!' ?></h1>
         <p class="mt-2"><?= $paid

@@ -22,10 +22,10 @@
     <form method="post" action="<?= e(url('/admin/restaurant/'.$it['id'])) ?>" style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)">
       <?= csrf_field() ?>
       <div style="flex:1">
-        <input name="name" value="<?= e($it['name']) ?>" style="border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%">
-        <input name="description" value="<?= e($it['description']) ?>" placeholder="description" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;width:100%;margin-top:5px;font-size:.82rem;color:var(--muted)">
+        <input name="name" value="<?= e($it['name']) ?>" style="border:1px solid var(--line);border-radius:0;padding:7px 10px;width:100%">
+        <input name="description" value="<?= e($it['description']) ?>" placeholder="description" style="border:1px solid var(--line);border-radius:0;padding:6px 10px;width:100%;margin-top:5px;font-size:.82rem;color:var(--muted)">
       </div>
-      <input type="number" name="price" value="<?= e((int)$it['price']) ?>" style="border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:96px">
+      <input type="number" name="price" value="<?= e((int)$it['price']) ?>" style="border:1px solid var(--line);border-radius:0;padding:7px 10px;width:96px">
       <label class="checkbox" style="white-space:nowrap;padding-top:8px"><input type="checkbox" name="is_available" value="1" <?= $it['is_available']?'checked':'' ?>> <span style="font-size:.82rem">Available</span></label>
       <button class="btn btn-primary btn-sm" type="submit" style="margin-top:2px"><?= icon('check','',14) ?> Save</button>
     </form>

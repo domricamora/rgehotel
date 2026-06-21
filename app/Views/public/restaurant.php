@@ -2,7 +2,7 @@
 <?= partial('partials.page-hero', [
     'pageTitle' => 'Restaurant',
     'pageSub'   => 'Fresh seafood and Filipino favourites, served by the beach.',
-    'heroImage' => 'general/beach',
+    'heroImage' => 'general/restaurant',
     'crumbs'    => ['Restaurant' => null],
 ]) ?>
 <section class="section">

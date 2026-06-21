@@ -75,7 +75,8 @@
         "beach": "general\/beach",
         "kalanggaman": "general\/kalanggaman",
         "aerial": "general\/aerial",
-        "sunset": "general\/sunset"
+        "sunset": "general\/sunset",
+        "restaurant": "general\/restaurant"
     },
     "logo": "general\/logo"
 }

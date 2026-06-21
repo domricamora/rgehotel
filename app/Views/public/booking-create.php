@@ -45,9 +45,9 @@
       </div>
       <aside>
         <div class="booking-card">
-          <div class="card__media" style="border-radius:14px;overflow:hidden;aspect-ratio:16/10;margin-bottom:16px"><?= img_tag($room['cover'] ?? null, $room['name']) ?></div>
+          <div class="card__media" style="border-radius:0;overflow:hidden;aspect-ratio:16/10;margin-bottom:16px"><?= img_tag($room['cover'] ?? null, $room['name']) ?></div>
           <h3 style="font-size:1.15rem"><?= e($room['name']) ?></h3>
-          <?php if ($offer): ?><span class="chip" style="background:#fff0e9;color:var(--coral-deep);margin-top:8px"><?= icon('tag','',14) ?> <?= e($offer['title']) ?></span><?php endif; ?>
+          <?php if ($offer): ?><span class="chip" style="background:#f6ece2;color:var(--coral-deep);margin-top:8px"><?= icon('tag','',14) ?> <?= e($offer['title']) ?></span><?php endif; ?>
           <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
           <div class="flex" style="justify-content:space-between"><span class="muted"><?= money($quote['rate']) ?> × <?= (int)$quote['nights'] ?> nights × <?= (int)$quote['rooms'] ?></span><span><?= money($quote['subtotal']) ?></span></div>
           <?php if ($quote['discount'] > 0): ?><div class="flex mt-2" style="justify-content:space-between;color:var(--coral-deep)"><span>Discount</span><span>−<?= money($quote['discount']) ?></span></div><?php endif; ?>

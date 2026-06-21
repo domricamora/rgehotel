@@ -3,7 +3,7 @@
   <div class="panel__head">
     <h2>All Bookings</h2>
     <form method="get" style="display:flex;gap:8px">
-      <select name="status" class="field" style="padding:8px 12px;border:1px solid var(--line);border-radius:10px" onchange="this.form.submit()">
+      <select name="status" class="field" style="padding:8px 12px;border:1px solid var(--line);border-radius:0" onchange="this.form.submit()">
         <option value="">All statuses</option>
         <?php foreach (['pending','confirmed','checked_in','checked_out','cancelled'] as $s): ?>
           <option value="<?= $s ?>" <?= $status===$s?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$s)) ?></option>

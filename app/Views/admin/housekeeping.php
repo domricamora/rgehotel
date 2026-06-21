@@ -15,8 +15,8 @@
           <td>
             <form method="post" action="<?= e(url('/admin/housekeeping/'.$r['id'])) ?>" style="display:flex;gap:6px;align-items:center">
               <?= csrf_field() ?>
-              <select name="status" style="padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:.82rem"><?php foreach(['available','occupied','cleaning','maintenance'] as $s):?><option <?= $r['status']===$s?'selected':'' ?>><?= $s ?></option><?php endforeach;?></select>
-              <select name="housekeeping" style="padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:.82rem"><?php foreach(['clean','dirty','inspected'] as $s):?><option <?= $r['housekeeping']===$s?'selected':'' ?>><?= $s ?></option><?php endforeach;?></select>
+              <select name="status" style="padding:6px 8px;border:1px solid var(--line);border-radius:0;font-size:.82rem"><?php foreach(['available','occupied','cleaning','maintenance'] as $s):?><option <?= $r['status']===$s?'selected':'' ?>><?= $s ?></option><?php endforeach;?></select>
+              <select name="housekeeping" style="padding:6px 8px;border:1px solid var(--line);border-radius:0;font-size:.82rem"><?php foreach(['clean','dirty','inspected'] as $s):?><option <?= $r['housekeeping']===$s?'selected':'' ?>><?= $s ?></option><?php endforeach;?></select>
               <button class="btn btn-primary btn-sm" type="submit"><?= icon('check','',14) ?></button>
             </form>
           </td>

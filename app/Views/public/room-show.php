@@ -50,11 +50,11 @@ $defaultOut = date('Y-m-d', strtotime('+9 days'));
         <h3 class="mt-4">Ongoing offers</h3>
         <div class="grid grid-2 mt-2">
           <?php foreach ($offers as $o): ?>
-          <div class="card" style="border-color:#ffe3d6"><div class="card__body">
-            <span class="chip" style="background:#fff0e9;color:var(--coral-deep)"><?= icon('percent','',15) ?> <?= $o['discount_type']==='percent' ? (int)$o['discount_value'].'% OFF' : money($o['discount_value']).' OFF' ?></span>
+          <div class="card" style="border-color:#e9d8c5"><div class="card__body">
+            <span class="chip" style="background:#f6ece2;color:var(--coral-deep)"><?= icon('percent','',15) ?> <?= $o['discount_type']==='percent' ? (int)$o['discount_value'].'% OFF' : money($o['discount_value']).' OFF' ?></span>
             <strong><?= e($o['title']) ?></strong>
             <p style="font-size:.9rem"><?= e($o['subtitle']) ?></p>
-            <?php if ($o['code']): ?><span>Use code <code style="background:var(--sand);padding:2px 7px;border-radius:5px"><?= e($o['code']) ?></code></span><?php endif; ?>
+            <?php if ($o['code']): ?><span>Use code <code style="background:var(--sand);padding:2px 7px;border-radius:0"><?= e($o['code']) ?></code></span><?php endif; ?>
           </div></div>
           <?php endforeach; ?>
         </div>

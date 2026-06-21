@@ -38,7 +38,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= e(asset('img/favicon-32.png')) ?>">
 <link rel="apple-touch-icon" href="<?= e(asset('img/apple-touch-icon.png')) ?>">
-<meta name="theme-color" content="#0e7c86">
+<meta name="theme-color" content="#6a7548">
 <link rel="preload" as="font" type="font/woff2" href="<?= e(asset('fonts/inter-latin.woff2')) ?>" crossorigin>
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
