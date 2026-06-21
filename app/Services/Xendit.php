@@ -36,6 +36,7 @@ class Xendit
 
     private function request(string $method, string $url, array $body): array
     {
+        $ca = dirname(__DIR__, 2) . '/config/cacert.pem';
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
@@ -45,6 +46,7 @@ class Xendit
             CURLOPT_USERPWD        => $this->cfg['secret_key'] . ':',
             CURLOPT_TIMEOUT        => 30,
         ]);
+        if (is_file($ca)) curl_setopt($ch, CURLOPT_CAINFO, $ca);
         $res = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($res === false) { $err = curl_error($ch); curl_close($ch); throw new \RuntimeException('Xendit cURL: ' . $err); }

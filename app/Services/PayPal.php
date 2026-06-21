@@ -34,6 +34,8 @@ class PayPal
             CURLOPT_HTTPHEADER => ['Accept: application/json'],
             CURLOPT_TIMEOUT => 30,
         ]);
+        $ca = dirname(__DIR__, 2) . '/config/cacert.pem';
+        if (is_file($ca)) curl_setopt($ch, CURLOPT_CAINFO, $ca);
         $res = curl_exec($ch);
         if ($res === false) { $e = curl_error($ch); curl_close($ch); throw new \RuntimeException('PayPal auth cURL: ' . $e); }
         curl_close($ch);
@@ -84,6 +86,8 @@ class PayPal
             CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Authorization: Bearer ' . $this->token()],
             CURLOPT_TIMEOUT => 30,
         ]);
+        $ca = dirname(__DIR__, 2) . '/config/cacert.pem';
+        if (is_file($ca)) curl_setopt($ch, CURLOPT_CAINFO, $ca);
         $res = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($res === false) { $e = curl_error($ch); curl_close($ch); throw new \RuntimeException('PayPal cURL: ' . $e); }
