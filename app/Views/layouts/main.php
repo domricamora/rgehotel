@@ -3,7 +3,8 @@ use App\Models\Setting;
 $title = $title ?? 'RGE Hotel — Beachfront Escape near Kalanggaman Island, Leyte';
 $metaDescription = $metaDescription ?? 'RGE Hotel — a chic, modern beachfront hotel in Palompon, Leyte, the gateway to Kalanggaman Island. Rooms, island-hopping tours, water sports and more.';
 $active = $active ?? '';
-$ogImage = isset($ogImage) ? $ogImage : url('assets/img/general/hero-island-full.webp');
+$ogImage = isset($ogImage) ? site_url($ogImage) : site_url('assets/img/general/hero-island-full.webp');
+$canonical = site_url($_SERVER['REQUEST_URI'] ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '/');
 $nav = [
     'accommodations' => ['Accommodations', url('/accommodations')],
     'packages'       => ['Packages', url('/packages')],
@@ -29,8 +30,9 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= e($metaDescription) ?>">
-<link rel="canonical" href="<?= e(url($_SERVER['REQUEST_URI'] ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '/')) ?>">
+<link rel="canonical" href="<?= e($canonical) ?>">
 <meta property="og:type" content="website">
+<meta property="og:url" content="<?= e($canonical) ?>">
 <meta property="og:title" content="<?= e($title) ?>">
 <meta property="og:description" content="<?= e($metaDescription) ?>">
 <meta property="og:image" content="<?= e($ogImage) ?>">

@@ -12,6 +12,7 @@ $config = [
     'app' => [
         'name'      => 'RGE Hotel',
         'tagline'   => 'Beachfront Escape · Kalanggaman Island, Leyte',
+        'url'       => 'https://rgehotel.com',  // canonical absolute base (canonical/OG/sitemap)
         'env'       => 'local',           // local | production
         'debug'     => true,
         'timezone'  => 'Asia/Manila',

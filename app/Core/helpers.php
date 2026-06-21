@@ -50,6 +50,20 @@ if (!function_exists('url')) {
     }
 }
 
+if (!function_exists('site_url')) {
+    /** Absolute URL (scheme+host). Use for canonical, OG tags, sitemap. */
+    function site_url(string $path = '/'): string
+    {
+        if (preg_match('#^https?://#', $path)) return $path;
+        $base = rtrim((string) config('app.url', ''), '/');
+        if ($base === '') {
+            $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['SERVER_PORT'] ?? '') == 443);
+            $base = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        }
+        return $base . url($path);
+    }
+}
+
 if (!function_exists('asset')) {
     /** URL for a file under /assets. asset('css/app.css') */
     function asset(string $path): string
