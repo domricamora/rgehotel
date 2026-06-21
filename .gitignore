@@ -24,3 +24,6 @@ Thumbs.db
 .DS_Store
 desktop.ini
 *.log
+
+# Hero video (deployed via FTP, too large for git)
+assets/video/*.mp4
