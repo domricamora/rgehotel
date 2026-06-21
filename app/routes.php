@@ -41,6 +41,7 @@ return function (Router $r) {
     $r->post('/booking/{ref}/billing/pay','Public\BillingController@pay');
     // Gateway callbacks / webhooks
     $r->any('/payment/xendit/webhook',   'Public\PaymentController@xenditWebhook');
+    $r->get('/payment/paypal/return',    'Public\PaymentController@paypalReturn');
     $r->get('/payment/return/{ref}',     'Public\PaymentController@genericReturn');
 
     /* -------------------- Admin auth -------------------- */

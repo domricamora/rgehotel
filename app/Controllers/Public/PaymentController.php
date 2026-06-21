@@ -5,6 +5,7 @@ use App\Core\Controller;
 use App\Models\Booking;
 use App\Models\Folio;
 use App\Services\Xendit;
+use App\Services\PayPal;
 
 class PaymentController extends Controller
 {
@@ -28,6 +29,18 @@ class PaymentController extends Controller
                     return '';
                 }
                 return $this->simulate($booking, 'xendit');
+            }
+
+            if ($method === 'paypal') {
+                $paypal = new PayPal();
+                if ($paypal->isConfigured()) {
+                    $order = $paypal->createOrder($booking);
+                    $approve = $paypal->approvalUrl($order);
+                    $this->recordPayment($booking, 'paypal', 'pending', $order['id'] ?? null, $approve, $order);
+                    redirect($approve);
+                    return '';
+                }
+                return $this->simulate($booking, 'paypal');
             }
 
             // Pay-at-hotel / reserve without online payment.
@@ -93,6 +106,32 @@ class PaymentController extends Controller
             }
         }
         return $this->json(['ok' => true]);
+    }
+
+    /** PayPal buyer returns after approving — capture the order. */
+    public function paypalReturn(): string
+    {
+        $token = $this->input('token'); // PayPal order id
+        $ref = $this->input('ref');
+        $booking = $ref ? Booking::findByReference($ref) : null;
+        try {
+            $paypal = new PayPal();
+            if ($paypal->isConfigured() && $token) {
+                $capture = $paypal->captureOrder($token);
+                if (($capture['status'] ?? '') === 'COMPLETED') {
+                    $payment = $this->db->first('SELECT * FROM payments WHERE external_id = ?', [$token]);
+                    if ($payment) {
+                        $this->db->update('payments', ['status' => 'paid', 'updated_at' => date('c')], ['id' => $payment['id']]);
+                        Folio::reconcile((int)$payment['booking_id']);
+                        $booking = Booking::find((int)$payment['booking_id']);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            logger('PayPal capture error: ' . $e->getMessage(), 'error');
+        }
+        if ($booking) { redirect('/booking/' . $booking['reference'] . '/confirmation'); return ''; }
+        return $this->abort(404, 'Booking not found');
     }
 
     public function genericReturn(string $ref): string

@@ -53,12 +53,15 @@ Sandbox-ready. Add keys in `config/config.local.php` (gitignored):
 ```php
 <?php return [
   'payments' => [
-    'xendit' => ['secret_key' => 'xnd_development_...', 'webhook_token' => '...'],
+    'xendit' => ['secret_key' => 'xnd_...', 'webhook_token' => '...'],
+    'paypal' => ['mode' => 'live', 'client_id' => '...', 'client_secret' => '...'],
   ],
 ];
 ```
 Until real keys are set, the pay page runs a **simulated** sandbox payment (no charge)
-so the booking flow is fully testable. Webhook: `/payment/xendit/webhook`.
+so the booking flow is fully testable. Xendit webhook: `/payment/xendit/webhook`.
+PayPal buyer return (capture): `/payment/paypal/return`. Set PayPal `mode` to `live`
+with live REST app credentials to take real payments.
 
 Guests can settle their in-house folio (room charges added by the front desk) online
 at `/booking/{ref}/billing`; staff post and settle charges from the booking detail page.
