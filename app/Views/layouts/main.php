@@ -13,6 +13,13 @@ $nav = [
     'about'          => ['About', url('/about')],
     'contact'        => ['Contact', url('/contact')],
 ];
+// Show the Restaurant link only when the restaurant page is published.
+$restaurantPublished = Setting::get('restaurant_published', '0') === '1';
+if ($restaurantPublished) {
+    $nav = array_slice($nav, 0, 3, true)
+         + ['restaurant' => ['Restaurant', url('/restaurant')]]
+         + array_slice($nav, 3, null, true);
+}
 $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
 ?>
 <!DOCTYPE html>
@@ -78,6 +85,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
           <li><a href="<?= e(url('/packages')) ?>">Packages</a></li>
           <li><a href="<?= e(url('/services')) ?>">Tours &amp; Services</a></li>
           <li><a href="<?= e(url('/offers')) ?>">Offers</a></li>
+          <?php if ($restaurantPublished): ?><li><a href="<?= e(url('/restaurant')) ?>">Restaurant</a></li><?php endif; ?>
         </ul>
       </div>
       <div>
