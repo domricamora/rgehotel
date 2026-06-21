@@ -72,6 +72,19 @@ return function (Router $r) {
 
     $r->get('/admin/payments',           'Admin\PaymentController@index',  ['auth', 'permission:payments.view']);
 
+    // Accounting
+    $r->get('/admin/accounting',                 'Admin\AccountingController@overview', ['auth', 'permission:accounting.view']);
+    $r->get('/admin/accounting/ledger',          'Admin\AccountingController@ledger',   ['auth', 'permission:accounting.view']);
+    $r->post('/admin/accounting/ledger/record',  'Admin\AccountingController@recordPayment', ['auth', 'permission:accounting.manage']);
+    $r->get('/admin/accounting/expenses',        'Admin\AccountingController@expenses', ['auth', 'permission:accounting.view']);
+    $r->post('/admin/accounting/expenses/{id}/delete', 'Admin\AccountingController@deleteExpense', ['auth', 'permission:accounting.manage']);
+    $r->post('/admin/accounting/expenses/{id}',  'Admin\AccountingController@saveExpense', ['auth', 'permission:accounting.manage']);
+    $r->get('/admin/accounting/refunds',         'Admin\AccountingController@refunds',  ['auth', 'permission:accounting.view']);
+    $r->post('/admin/accounting/refunds',        'Admin\AccountingController@saveRefund', ['auth', 'permission:accounting.manage']);
+    $r->get('/admin/accounting/reports',         'Admin\AccountingController@reports',  ['auth', 'permission:accounting.view']);
+    $r->get('/admin/accounting/export/{type}',   'Admin\AccountingController@export',   ['auth', 'permission:accounting.view']);
+    $r->get('/admin/accounting/invoice/{id}',    'Admin\AccountingController@invoice',  ['auth', 'permission:accounting.view']);
+
     $r->get('/admin/users',              'Admin\UserController@index',  ['auth', 'permission:users.manage']);
     $r->get('/admin/users/{id}',         'Admin\UserController@edit',   ['auth', 'permission:users.manage']);
     $r->post('/admin/users/{id}',        'Admin\UserController@save',   ['auth', 'permission:users.manage']);

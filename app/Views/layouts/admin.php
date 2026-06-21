@@ -18,8 +18,14 @@ $content_nav = [
     ['reviews', 'Reviews', url('/admin/reviews'), 'star', 'reviews.moderate'],
     ['restaurant', 'Restaurant', url('/admin/restaurant'), 'utensils', 'restaurant.manage'],
 ];
+$finance_nav = [
+    ['accounting', 'Overview', url('/admin/accounting'), 'layout-dashboard', 'accounting.view'],
+    ['acc_ledger', 'Payments Ledger', url('/admin/accounting/ledger'), 'percent', 'accounting.view'],
+    ['acc_expenses', 'Expenses', url('/admin/accounting/expenses'), 'tag', 'accounting.view'],
+    ['acc_refunds', 'Refunds', url('/admin/accounting/refunds'), 'anchor', 'accounting.view'],
+    ['acc_reports', 'Reports & P&L', url('/admin/accounting/reports'), 'star', 'accounting.view'],
+];
 $admin_nav = [
-    ['payments', 'Payments', url('/admin/payments'), 'percent', 'payments.view'],
     ['users', 'Users', url('/admin/users'), 'users', 'users.manage'],
     ['settings', 'Settings', url('/admin/settings'), 'sparkles', 'settings.manage'],
 ];
@@ -50,7 +56,11 @@ $renderNav = function(array $items) use ($active) {
         <div class="group-label">Content</div>
         <?php $renderNav($content_nav); ?>
       <?php endif; ?>
-      <?php if (Auth::can('payments.view')||Auth::can('users.manage')||Auth::can('settings.manage')): ?>
+      <?php if (Auth::can('accounting.view')): ?>
+        <div class="group-label">Accounting</div>
+        <?php $renderNav($finance_nav); ?>
+      <?php endif; ?>
+      <?php if (Auth::can('users.manage')||Auth::can('settings.manage')): ?>
         <div class="group-label">Administration</div>
         <?php $renderNav($admin_nav); ?>
       <?php endif; ?>

@@ -335,3 +335,53 @@ CREATE TABLE IF NOT EXISTS subscribers (
     source     TEXT DEFAULT 'website',
     created_at TEXT DEFAULT (datetime('now'))
 );
+
+-- ----------------------------------------------------------------------------
+-- Accounting: expenses, other income, refunds
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS expense_categories (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug       TEXT NOT NULL UNIQUE,
+    name       TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id    INTEGER REFERENCES expense_categories(id),
+    description    TEXT NOT NULL,
+    vendor         TEXT,
+    amount         REAL NOT NULL DEFAULT 0,
+    expense_date   TEXT NOT NULL,
+    payment_method TEXT,                       -- cash|bank|gcash|card|other
+    reference      TEXT,
+    notes          TEXT,
+    recorded_by    INTEGER REFERENCES users(id),
+    created_at     TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(expense_date);
+
+CREATE TABLE IF NOT EXISTS other_income (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    source       TEXT NOT NULL,                 -- restaurant|service|other
+    description  TEXT,
+    amount       REAL NOT NULL DEFAULT 0,
+    income_date  TEXT NOT NULL,
+    method       TEXT,
+    notes        TEXT,
+    recorded_by  INTEGER REFERENCES users(id),
+    created_at   TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_other_income_date ON other_income(income_date);
+
+CREATE TABLE IF NOT EXISTS refunds (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    booking_id   INTEGER REFERENCES bookings(id),
+    payment_id   INTEGER REFERENCES payments(id),
+    amount       REAL NOT NULL DEFAULT 0,
+    reason       TEXT,
+    method       TEXT,
+    refunded_by  INTEGER REFERENCES users(id),
+    created_at   TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_refunds_date ON refunds(created_at);

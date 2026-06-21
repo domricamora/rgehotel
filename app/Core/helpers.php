@@ -130,6 +130,18 @@ if (!function_exists('money')) {
     }
 }
 
+if (!function_exists('vat_breakdown')) {
+    /** Split a VAT-inclusive total into net + VAT components. */
+    function vat_breakdown($total, ?float $rate = null): array
+    {
+        $rate = $rate ?? (float) (\App\Models\Setting::get('vat_rate', 12));
+        $total = (float) $total;
+        if ($rate <= 0) return ['net' => $total, 'vat' => 0.0, 'rate' => 0.0, 'gross' => $total];
+        $net = $total / (1 + $rate / 100);
+        return ['net' => round($net, 2), 'vat' => round($total - $net, 2), 'rate' => $rate, 'gross' => $total];
+    }
+}
+
 if (!function_exists('slugify')) {
     function slugify(string $text): string
     {

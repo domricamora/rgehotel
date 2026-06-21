@@ -59,6 +59,7 @@ $canManage = Auth::can('bookings.manage');
         <?php else: ?><p class="muted">You have view-only access to bookings.</p><?php endif; ?>
       </div>
     </div>
+    <a class="btn btn-outline" href="<?= e(url('/admin/accounting/invoice/'.$b['id'])) ?>" target="_blank"><?= icon('arrow-right') ?> View / print invoice</a>
     <a class="btn btn-outline" href="<?= e(url('/admin/bookings')) ?>">← Back to bookings</a>
   </div>
 </div>
