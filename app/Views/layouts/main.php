@@ -28,6 +28,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="0ljiej6EDAVcP4thTWqKqHROzpTctuRuSdf7Dc2IpH0">
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= e($metaDescription) ?>">
 <link rel="canonical" href="<?= e($canonical) ?>">
