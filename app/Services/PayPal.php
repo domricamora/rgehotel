@@ -56,8 +56,8 @@ class PayPal
             'application_context' => [
                 'brand_name' => 'RGE Hotel',
                 'user_action' => 'PAY_NOW',
-                'return_url' => url('/payment/paypal/return?ref=' . $booking['reference']),
-                'cancel_url' => url('/booking/' . $booking['reference'] . '/pay'),
+                'return_url' => site_url('/payment/paypal/return?ref=' . $booking['reference']),
+                'cancel_url' => site_url('/booking/' . $booking['reference'] . '/pay'),
             ],
         ];
         return $this->request('POST', '/v2/checkout/orders', $body);

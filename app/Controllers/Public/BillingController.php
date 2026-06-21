@@ -57,8 +57,8 @@ class BillingController extends Controller
                     $balance,
                     $externalId,
                     'RGE Hotel folio balance — ' . $ref,
-                    url('/booking/' . $ref . '/billing'),
-                    url('/booking/' . $ref . '/billing')
+                    site_url('/booking/' . $ref . '/billing'),
+                    site_url('/booking/' . $ref . '/billing')
                 );
                 $this->recordPayment($booking, $balance, 'pending', $externalId, $invoice['invoice_url'] ?? null, $invoice);
                 redirect($invoice['invoice_url']);

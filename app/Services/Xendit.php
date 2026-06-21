@@ -28,8 +28,8 @@ class Xendit
             (float) $booking['total'],
             $booking['reference'],
             'RGE Hotel booking ' . $booking['reference'],
-            url('/booking/' . $booking['reference'] . '/confirmation'),
-            url('/booking/' . $booking['reference'] . '/pay')
+            site_url('/booking/' . $booking['reference'] . '/confirmation'),
+            site_url('/booking/' . $booking['reference'] . '/pay')
         );
     }
 
