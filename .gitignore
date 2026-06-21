@@ -1,0 +1,26 @@
+# Secrets / credentials — never push to GitHub
+CLAUDE.md
+claude.md
+config/config.local.php
+*.env
+.env
+
+# Runtime data
+storage/*.sqlite
+storage/*.sqlite-*
+storage/uploads/
+storage/logs/
+coming-soon/subscribers.csv
+
+# Dependencies / build
+node_modules/
+vendor/composer/
+
+# Stray nested clone of the GitHub repo (empty) — not part of the project
+/rgehotel/
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+desktop.ini
+*.log
