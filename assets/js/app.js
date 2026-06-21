@@ -59,6 +59,59 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   }
 
+  // Eased scrolling (custom easing) + scroll-to-top
+  function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function easedScrollTo(targetY) {
+    var startY = window.pageYOffset || document.documentElement.scrollTop;
+    var diff = targetY - startY;
+    if (Math.abs(diff) < 2) return;
+    var duration = Math.min(900, Math.max(350, Math.abs(diff) * 0.45));
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var p = Math.min(1, (ts - start) / duration);
+      // behavior:auto so our easing drives it (CSS scroll-behavior:smooth would fight a per-frame set)
+      window.scrollTo({ top: startY + diff * easeInOutCubic(p), behavior: 'auto' });
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // In-page anchor links: eased scroll with sticky-header offset
+  var HEADER_OFFSET = 96;
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    var hash = a.getAttribute('href');
+    if (!hash || hash.length < 2) return; // ignore bare "#"
+    a.addEventListener('click', function (e) {
+      var target = document.getElementById(hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      var y = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+      easedScrollTo(y);
+      if (history.replaceState) history.replaceState(null, '', hash);
+    });
+  });
+
+  // Scroll-to-top button (created here so no template edits needed)
+  var toTop = document.createElement('button');
+  toTop.type = 'button';
+  toTop.className = 'to-top';
+  toTop.setAttribute('aria-label', 'Back to top');
+  toTop.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
+  document.body.appendChild(toTop);
+  toTop.addEventListener('click', function () { easedScrollTo(0); });
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      toTop.classList.toggle('show', (window.pageYOffset || document.documentElement.scrollTop) > 420);
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
   // Booking bar: keep checkout >= checkin
   var ci = document.querySelector('[name="check_in"]');
   var co = document.querySelector('[name="check_out"]');
