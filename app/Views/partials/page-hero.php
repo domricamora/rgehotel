@@ -1,6 +1,7 @@
 <?php
 /** @var string $pageTitle @var string|null $pageSub @var string|null $heroImage @var array|null $crumbs */
 $heroImage = $heroImage ?? 'general/beach';
+$GLOBALS['heroPreload'] = img_url($heroImage, 'full'); // primes LCP preload in <head>
 ?>
 <section class="page-hero">
   <div class="page-hero__bg" style="background-image:url('<?= e(img_url($heroImage, 'full')) ?>')"></div>

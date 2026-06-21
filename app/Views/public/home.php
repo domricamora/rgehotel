@@ -3,12 +3,13 @@ use App\Models\Setting;
 /** @var array $rooms @var array $services @var array $packages @var array $offers @var array $reviews @var array $rating */
 $heroImg = Setting::get('hero_image', 'general/hero-island');
 $heroVideo = Setting::get('hero_video', '');   // e.g. 'video/hero.mp4' under assets/ — empty = photo only
+$GLOBALS['heroPreload'] = img_url($heroImg, 'full'); // primes LCP preload in <head>
 ?>
 <!-- HERO -->
 <section class="hero">
   <div class="hero__bg" style="background-image:url('<?= e(img_url($heroImg, 'full')) ?>')"></div>
   <?php if ($heroVideo): ?>
-  <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="<?= e(img_url($heroImg, 'full')) ?>" aria-hidden="true">
+  <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="<?= e(img_url($heroImg, 'full')) ?>" aria-hidden="true">
     <source src="<?= e(asset($heroVideo)) ?>" type="video/mp4">
   </video>
   <script>
