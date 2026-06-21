@@ -7,8 +7,7 @@ config/config.local.php
 .env
 
 # Runtime data
-storage/*.sqlite
-storage/*.sqlite-*
+storage/db/
 storage/uploads/
 storage/logs/
 coming-soon/subscribers.csv
