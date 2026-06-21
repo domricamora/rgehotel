@@ -130,7 +130,11 @@ p { color: var(--slate); }
   width: 100%; height: 100%; object-fit: cover;
   /* Brightness/saturation are baked into the encoded file (CSS filters don't
      reliably apply to hardware-composited video frames). */
+  /* Stay transparent until the footage can play, then fade in over the
+     poster/background photo so there's no first-frame flicker. */
+  opacity: 0; transition: opacity 1s ease-in-out;
 }
+.hero.is-video-ready .hero__video { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .hero__bg, .page-hero__bg { animation: none; } .hero__video { display: none; } }
 .hero::after {
   content: ''; position: absolute; inset: 0; z-index: -1;

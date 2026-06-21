@@ -8,9 +8,23 @@ $heroVideo = Setting::get('hero_video', '');   // e.g. 'video/hero.mp4' under as
 <section class="hero">
   <div class="hero__bg" style="background-image:url('<?= e(img_url($heroImg, 'full')) ?>')"></div>
   <?php if ($heroVideo): ?>
-  <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="<?= e(img_url($heroImg, 'full')) ?>" aria-hidden="true">
+  <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="<?= e(img_url($heroImg, 'full')) ?>" aria-hidden="true">
     <source src="<?= e(asset($heroVideo)) ?>" type="video/mp4">
   </video>
+  <script>
+  (function(){
+    var v = document.querySelector('.hero__video'); if (!v) return;
+    var hero = v.closest('.hero');
+    function reveal(){ hero.classList.add('is-video-ready'); }
+    if (v.readyState >= 3) reveal();
+    else {
+      v.addEventListener('canplay', reveal, { once: true });
+      v.addEventListener('playing', reveal, { once: true });
+      v.addEventListener('loadeddata', reveal, { once: true });
+    }
+    window.addEventListener('load', reveal, { once: true }); // safety net
+  })();
+  </script>
   <?php endif; ?>
   <div class="container hero__inner">
     <span class="eyebrow">Kalanggaman Island · Leyte, Philippines</span>
