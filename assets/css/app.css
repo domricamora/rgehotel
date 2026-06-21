@@ -135,7 +135,6 @@ p { color: var(--slate); }
   opacity: 0; transition: opacity 1s ease-in-out;
 }
 .hero.is-video-ready .hero__video { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .hero__bg, .page-hero__bg { animation: none; } .hero__video { display: none; } }
 .hero::after {
   content: ''; position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, rgba(43,38,32,.18) 0%, rgba(43,38,32,.10) 45%, rgba(43,38,32,.74) 100%);
@@ -311,10 +310,3 @@ p { color: var(--slate); }
 /* Alert box entrance */
 @keyframes alertIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 .alert{animation:alertIn .45s ease both}
-
-@media (prefers-reduced-motion: reduce){
-  .js .reveal{opacity:1;transform:none;transition:none}
-  .js .grid > .reveal{transition-delay:0s}
-  .hero__inner > *,.page-hero .container > *,.alert{animation:none}
-  html{scroll-behavior:auto}
-}
