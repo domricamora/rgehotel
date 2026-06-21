@@ -75,8 +75,12 @@
         "beach": "general\/beach",
         "kalanggaman": "general\/kalanggaman",
         "aerial": "general\/aerial",
-        "sunset": "general\/sunset",
-        "restaurant": "general\/restaurant"
+        "sunset": "general\/sunset"
     },
-    "logo": "general\/logo"
+    "logo": "general\/logo",
+    "offers": {
+        "early-bird": "offers\/early-bird",
+        "stay-3-pay-2": "offers\/stay-3-pay-2",
+        "summer-splash": "offers\/summer-splash"
+    }
 }
