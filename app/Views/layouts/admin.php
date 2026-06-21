@@ -8,6 +8,7 @@ $pageTitle = $pageTitle ?? ($title ?? 'Dashboard');
 $nav = [
     ['dashboard', 'Dashboard', url('/admin'), 'layout-dashboard', null],
     ['bookings', 'Bookings', url('/admin/bookings'), 'calendar', 'bookings.view'],
+    ['billing', 'Billing', url('/admin/billing'), 'wallet', 'bookings.view'],
     ['rooms', 'Rooms', url('/admin/rooms'), 'bed', 'rooms.view'],
     ['housekeeping', 'Housekeeping', url('/admin/housekeeping'), 'sparkles', 'housekeeping.view'],
 ];

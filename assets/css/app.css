@@ -149,6 +149,9 @@ p { color: var(--slate); }
   grid-template-columns: repeat(4, 1fr) auto; gap: 14px; align-items: end;
   margin-top: -44px; position: relative; z-index: 5;
 }
+/* The -44px lifts the bar over the homepage hero. Inside a content section
+   (e.g. Accommodations, below the availability alert) that overlap is wrong. */
+.section .book-bar { margin-top: 0; }
 .book-bar .field { display: flex; flex-direction: column; gap: 6px; }
 .book-bar label { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .book-bar input, .book-bar select {

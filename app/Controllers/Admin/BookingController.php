@@ -9,7 +9,9 @@ class BookingController extends Controller
     public function index(): string
     {
         $status = $this->input('status');
-        $sql = 'SELECT b.*, rt.name AS room_name FROM bookings b JOIN room_types rt ON rt.id=b.room_type_id';
+        $sql = "SELECT b.*, rt.name AS room_name,
+                       COALESCE((SELECT SUM(amount) FROM room_charges c WHERE c.booking_id=b.id AND c.status!='void'),0) AS charges_total
+                FROM bookings b JOIN room_types rt ON rt.id=b.room_type_id";
         $params = [];
         if ($status) { $sql .= ' WHERE b.status = ?'; $params[] = $status; }
         $sql .= ' ORDER BY b.created_at DESC LIMIT 200';

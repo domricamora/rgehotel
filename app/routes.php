@@ -78,6 +78,11 @@ return function (Router $r) {
 
     $r->get('/admin/payments',           'Admin\PaymentController@index',  ['auth', 'permission:payments.view']);
 
+    // Billing — front-desk folio overview for checkouts & settlements
+    $r->get('/admin/billing',              'Admin\BillingController@index',    ['auth', 'permission:bookings.view']);
+    $r->post('/admin/billing/{id}/settle',   'Admin\BillingController@settle',   ['auth', 'permission:bookings.manage']);
+    $r->post('/admin/billing/{id}/checkout', 'Admin\BillingController@checkout', ['auth', 'permission:bookings.manage']);
+
     // Accounting
     $r->get('/admin/accounting',                 'Admin\AccountingController@overview', ['auth', 'permission:accounting.view']);
     $r->get('/admin/accounting/ledger',          'Admin\AccountingController@ledger',   ['auth', 'permission:accounting.view']);

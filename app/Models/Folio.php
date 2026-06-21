@@ -147,4 +147,64 @@ class Folio
             ], ['id' => $bookingId]);
         }
     }
+
+    /** Record a manual cash/on-site settlement against a booking, then reconcile. */
+    public static function recordCashSettlement(int $bookingId, float $amount, string $method = 'cash', ?int $userId = null): void
+    {
+        $b = self::db()->first('SELECT currency FROM bookings WHERE id = ?', [$bookingId]);
+        self::db()->insert('payments', [
+            'booking_id'  => $bookingId,
+            'provider'    => 'cash',
+            'method'      => $method,
+            'amount'      => round($amount, 2),
+            'currency'    => $b['currency'] ?? 'PHP',
+            'status'      => 'paid',
+            'external_id' => 'CASH-' . strtoupper(bin2hex(random_bytes(3))),
+            'payload'     => json_encode(['recorded_by' => $userId, 'note' => 'Folio cash settlement']),
+        ]);
+        self::reconcile($bookingId);
+    }
+
+    /**
+     * In-house guests (active bookings) with their folio totals — drives the
+     * admin Billing page for checkouts and settlements. Newest checkout first.
+     */
+    public static function billingList(bool $onlyOutstanding = false): array
+    {
+        $rows = self::db()->all(
+            "SELECT b.id, b.reference, b.guest_name, b.check_in, b.check_out, b.status, b.payment_status,
+                    b.total AS room_total, b.currency, rt.name AS room_name,
+                    COALESCE((SELECT SUM(amount) FROM room_charges c WHERE c.booking_id=b.id AND c.status!='void'),0) AS charges_total,
+                    COALESCE((SELECT SUM(amount) FROM payments p WHERE p.booking_id=b.id AND p.status='paid'),0) AS paid
+             FROM bookings b JOIN room_types rt ON rt.id = b.room_type_id
+             WHERE b.status IN ('pending','confirmed','checked_in')
+             ORDER BY date(b.check_out) ASC, b.id ASC"
+        );
+        foreach ($rows as &$r) {
+            $r['grand_total'] = (float) $r['room_total'] + (float) $r['charges_total'];
+            $r['balance']     = max(0, round($r['grand_total'] - (float) $r['paid'], 2));
+        }
+        unset($r);
+        if ($onlyOutstanding) {
+            $rows = array_values(array_filter($rows, fn($r) => $r['balance'] > 0.005));
+        }
+        return $rows;
+    }
+
+    /** Headline figures for the Billing page. */
+    public static function billingSummary(array $rows): array
+    {
+        $outstanding = 0.0; $withBalance = 0; $dueToday = 0;
+        $today = date('Y-m-d');
+        foreach ($rows as $r) {
+            if ($r['balance'] > 0.005) { $outstanding += $r['balance']; $withBalance++; }
+            if (date('Y-m-d', strtotime($r['check_out'])) === $today) $dueToday++;
+        }
+        return [
+            'count'               => count($rows),
+            'guests_with_balance' => $withBalance,
+            'outstanding'         => $outstanding,
+            'due_today'           => $dueToday,
+        ];
+    }
 }

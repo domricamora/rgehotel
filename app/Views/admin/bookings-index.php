@@ -23,7 +23,8 @@
           <td><?= e($b['room_name']) ?></td>
           <td><?= e(date('M j, Y', strtotime($b['check_in']))) ?></td>
           <td><?= (int)$b['nights'] ?></td>
-          <td><?= money($b['total']) ?></td>
+          <?php $charges = (float)($b['charges_total'] ?? 0); $grand = (float)$b['total'] + $charges; ?>
+          <td><?= money($grand) ?><?php if ($charges > 0): ?><div class="muted" style="font-size:.78rem">room <?= money($b['total']) ?> + charges <?= money($charges) ?></div><?php endif; ?></td>
           <td><?= badge($b['status']) ?></td>
           <td><?= badge($b['payment_status']) ?></td>
           <td><a class="btn btn-outline btn-sm" href="<?= e(url('/admin/bookings/'.$b['id'])) ?>">Open</a></td>

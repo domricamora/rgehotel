@@ -71,17 +71,7 @@ class FolioController extends Controller
             return '';
         }
 
-        $this->db->insert('payments', [
-            'booking_id'  => $booking['id'],
-            'provider'    => 'cash',
-            'method'      => $this->input('method', 'cash'),
-            'amount'      => round($amount, 2),
-            'currency'    => $booking['currency'] ?: 'PHP',
-            'status'      => 'paid',
-            'external_id' => 'CASH-' . strtoupper(bin2hex(random_bytes(3))),
-            'payload'     => json_encode(['recorded_by' => Auth::id(), 'note' => 'Folio cash settlement']),
-        ]);
-        Folio::reconcile((int) $booking['id']);
+        Folio::recordCashSettlement((int) $booking['id'], $amount, (string) $this->input('method', 'cash'), Auth::id());
         flash('success', 'Cash payment of ' . money($amount) . ' recorded.');
         redirect('/admin/bookings/' . $id);
         return '';
