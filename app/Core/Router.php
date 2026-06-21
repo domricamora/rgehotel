@@ -57,6 +57,7 @@ class Router
     public function dispatch(): void
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        if ($method === 'HEAD') $method = 'GET'; // HEAD maps to GET (crawlers, uptime monitors)
         $path = $this->currentPath();
 
         foreach ($this->routes as $route) {

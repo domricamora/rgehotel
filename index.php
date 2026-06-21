@@ -16,17 +16,6 @@ spl_autoload_register(function (string $class) {
 // Helpers (procedural).
 require __DIR__ . '/app/Core/helpers.php';
 
-// Compress dynamic HTML output when the client supports it. Static assets are
-// already compressed by the server; this covers the PHP-rendered pages.
-if (
-    !ob_get_level()
-    && extension_loaded('zlib')
-    && !ini_get('zlib.output_compression')
-    && stripos($_SERVER['HTTP_ACCEPT_ENCODING'] ?? '', 'gzip') !== false
-) {
-    ob_start('ob_gzhandler');
-}
-
 use App\Core\App;
 
 try {
