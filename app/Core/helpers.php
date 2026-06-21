@@ -227,7 +227,7 @@ if (!function_exists('stars')) {
     function stars($rating, int $size = 16): string
     {
         $rating = (float) $rating;
-        $out = '<span class="rating" aria-label="' . e(round($rating,1)) . ' out of 5">';
+        $out = '<span class="rating" role="img" aria-label="' . e(round($rating,1)) . ' out of 5">';
         for ($i = 1; $i <= 5; $i++) {
             $on = $i <= round($rating);
             $out .= '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="' . ($on ? 'currentColor' : 'none')

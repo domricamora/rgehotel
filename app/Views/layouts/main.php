@@ -60,7 +60,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
       <?php endforeach; ?>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" href="<?= e(url('/accommodations')) ?>"><?= icon('calendar') ?><span class="btn-text">Book Now</span></a>
+      <a class="btn btn-primary btn-sm" href="<?= e(url('/accommodations')) ?>" aria-label="Book Now"><?= icon('calendar') ?><span class="btn-text">Book Now</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="Menu"><?= icon('menu') ?></button>
     </div>
   </div>
@@ -83,7 +83,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
         </div>
       </div>
       <div>
-        <h4>Explore</h4>
+        <h2>Explore</h2>
         <ul class="footer-links">
           <li><a href="<?= e(url('/accommodations')) ?>">Accommodations</a></li>
           <li><a href="<?= e(url('/packages')) ?>">Packages</a></li>
@@ -93,7 +93,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
         </ul>
       </div>
       <div>
-        <h4>Hotel</h4>
+        <h2>Hotel</h2>
         <ul class="footer-links">
           <li><a href="<?= e(url('/about')) ?>">About</a></li>
           <li><a href="<?= e(url('/reviews')) ?>">Reviews</a></li>
@@ -101,7 +101,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
         </ul>
       </div>
       <div>
-        <h4>Visit Us</h4>
+        <h2>Visit Us</h2>
         <ul class="footer-links">
           <li><?= icon('map-pin','',16) ?> <?= e(Setting::get('contact_address','Palompon, Leyte, Philippines')) ?></li>
           <li><a href="mailto:<?= e(Setting::get('contact_email','info@rgehotel.com')) ?>"><?= icon('mail','',16) ?> <?= e(Setting::get('contact_email','info@rgehotel.com')) ?></a></li>
