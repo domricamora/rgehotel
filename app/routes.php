@@ -54,6 +54,7 @@ return function (Router $r) {
     $r->get('/admin/bookings',           'Admin\BookingController@index',  ['auth', 'permission:bookings.view']);
     $r->get('/admin/bookings/{id}',      'Admin\BookingController@show',   ['auth', 'permission:bookings.view']);
     $r->post('/admin/bookings/{id}',     'Admin\BookingController@update', ['auth', 'permission:bookings.manage']);
+    $r->post('/admin/bookings/{id}/delete', 'Admin\BookingController@destroy', ['auth', 'permission:bookings.manage']); // super admin only (enforced in controller)
     // Folio: in-house charges + cash settlement
     $r->post('/admin/bookings/{id}/charges',            'Admin\FolioController@addCharge',   ['auth', 'permission:bookings.manage']);
     $r->post('/admin/bookings/{id}/charges/{cid}/void', 'Admin\FolioController@voidCharge',   ['auth', 'permission:bookings.manage']);

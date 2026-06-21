@@ -2,6 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Core\Auth;
 use App\Models\Folio;
 
 class BookingController extends Controller
@@ -48,6 +49,21 @@ class BookingController extends Controller
         ], ['id' => $id]);
         flash('success', 'Booking updated.');
         redirect('/admin/bookings/' . $id);
+        return '';
+    }
+
+    /** Permanently delete a booking and its records. Super admin only. */
+    public function destroy(string $id): string
+    {
+        $this->requirePost();
+        if (!Auth::isAdmin()) { http_response_code(403); echo $this->view('errors.403', [], 'admin'); exit; }
+        $b = $this->db->first('SELECT * FROM bookings WHERE id=?', [$id]);
+        if (!$b) return $this->abort(404, 'Booking not found');
+        // refunds has no ON DELETE CASCADE; remove first. payments/room_charges/booking_rooms cascade.
+        $this->db->delete('refunds', ['booking_id' => $id]);
+        $this->db->delete('bookings', ['id' => $id]);
+        flash('success', 'Booking ' . $b['reference'] . ' and its related records were permanently deleted.');
+        redirect('/admin/bookings');
         return '';
     }
 }

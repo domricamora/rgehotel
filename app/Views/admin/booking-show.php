@@ -139,5 +139,18 @@ $canManage = Auth::can('bookings.manage');
     </div>
     <a class="btn btn-outline" href="<?= e(url('/admin/accounting/invoice/'.$b['id'])) ?>" target="_blank"><?= icon('arrow-right') ?> View / print invoice</a>
     <a class="btn btn-outline" href="<?= e(url('/admin/bookings')) ?>">← Back to bookings</a>
+
+    <?php if (Auth::isAdmin()): ?>
+    <div class="panel" style="border-color:#f3c4c4;margin-top:16px">
+      <div class="panel__head"><h2 style="color:#9b2226">Danger zone</h2></div>
+      <div class="panel__body">
+        <p class="muted" style="font-size:.85rem;margin:0 0 12px">Permanently delete this booking and all its payments, charges and refunds. This cannot be undone.</p>
+        <form method="post" action="<?= e(url('/admin/bookings/'.$b['id'].'/delete')) ?>" onsubmit="return confirm('Permanently delete booking <?= e($b['reference']) ?> and ALL its records? This cannot be undone.')">
+          <?= csrf_field() ?>
+          <button class="btn btn-sm" type="submit" style="background:#9b2226;color:#fff"><?= icon('x','',16) ?> Delete booking</button>
+        </form>
+      </div>
+    </div>
+    <?php endif; ?>
   </div>
 </div>
