@@ -64,7 +64,7 @@ $defaultOut = date('Y-m-d', strtotime('+9 days'));
         <h3 class="mt-4">Related packages</h3>
         <div class="grid grid-2 mt-2">
           <?php foreach ($packages as $p): ?>
-          <article class="card"><a class="card__media" href="<?= e(url('/packages/'.$p['slug'])) ?>"><?= img_tag($p['image'] ?? $room['cover'], $p['name']) ?></a>
+          <article class="card reveal"><a class="card__media" href="<?= e(url('/packages/'.$p['slug'])) ?>"><?= img_tag($p['image'] ?? $room['cover'], $p['name']) ?></a>
             <div class="card__body"><h3 style="font-size:1.05rem"><a href="<?= e(url('/packages/'.$p['slug'])) ?>"><?= e($p['name']) ?></a></h3>
             <p style="font-size:.9rem"><?= e($p['summary']) ?></p>
             <div class="card__foot"><span class="price" style="font-size:1.05rem"><?= money($p['price']) ?></span><a class="btn btn-outline btn-sm" href="<?= e(url('/packages/'.$p['slug'])) ?>">View</a></div></div>

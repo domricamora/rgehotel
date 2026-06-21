@@ -37,7 +37,7 @@
     <h3 class="mt-4">You might also like</h3>
     <div class="grid grid-3 mt-2">
       <?php foreach ($related as $s): ?>
-      <article class="card"><a class="card__media" href="<?= e(url('/services/'.$s['slug'])) ?>"><?= img_tag($s['image'] ?? null, $s['name']) ?></a>
+      <article class="card reveal"><a class="card__media" href="<?= e(url('/services/'.$s['slug'])) ?>"><?= img_tag($s['image'] ?? null, $s['name']) ?></a>
         <div class="card__body"><h3 style="font-size:1.05rem"><a href="<?= e(url('/services/'.$s['slug'])) ?>"><?= e($s['name']) ?></a></h3>
         <div class="card__foot"><?php if($s['price']):?><span class="price" style="font-size:1.05rem"><?= money($s['price']) ?></span><?php endif;?><a class="btn btn-outline btn-sm" href="<?= e(url('/services/'.$s['slug'])) ?>">View</a></div></div>
       </article>

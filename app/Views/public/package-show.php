@@ -23,7 +23,7 @@
         <h3 class="mt-4">Experiences included</h3>
         <div class="grid grid-2 mt-2">
           <?php foreach ($services as $s): ?>
-          <article class="card"><a class="card__media" href="<?= e(url('/services/'.$s['slug'])) ?>"><?= img_tag($s['image'] ?? null, $s['name']) ?></a>
+          <article class="card reveal"><a class="card__media" href="<?= e(url('/services/'.$s['slug'])) ?>"><?= img_tag($s['image'] ?? null, $s['name']) ?></a>
             <div class="card__body"><h3 style="font-size:1.05rem"><a href="<?= e(url('/services/'.$s['slug'])) ?>"><?= e($s['name']) ?></a></h3><p style="font-size:.9rem"><?= e($s['summary']) ?></p></div></article>
           <?php endforeach; ?>
         </div>
