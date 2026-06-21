@@ -43,21 +43,33 @@ class HomeController extends Controller
     private function jsonLd(array $rating): string
     {
         $h = config('hotel');
+        $phone   = Setting::get('contact_phone', $h['phone'] ?? '');
+        $email   = Setting::get('contact_email', $h['email'] ?? '');
+        $address = Setting::get('contact_address', '');
+        $sameAs  = array_values(array_filter([
+            Setting::get('facebook_url', ''),
+            Setting::get('instagram_url', ''),
+        ]));
         $data = [
             '@context' => 'https://schema.org',
             '@type'    => 'Hotel',
             'name'     => $h['legal_name'],
             'description' => 'A modern beachfront hotel in Palompon, Leyte, gateway to Kalanggaman Island.',
-            'email'    => $h['email'],
-            'image'    => url('assets/img/general/hero-island-full.webp'),
-            'address'  => [
+            'url'      => site_url('/'),
+            'email'    => $email,
+            'image'    => site_url('assets/img/general/hero-island-full.webp'),
+            'priceRange' => '₱₱',
+            'address'  => array_filter([
                 '@type' => 'PostalAddress',
+                'streetAddress'   => $address ?: null,
                 'addressLocality' => $h['locality'],
                 'addressRegion'   => $h['region'],
                 'addressCountry'  => $h['country'],
-            ],
+            ]),
             'geo' => ['@type' => 'GeoCoordinates', 'latitude' => $h['lat'], 'longitude' => $h['lng']],
         ];
+        if ($phone)  $data['telephone'] = $phone;
+        if ($sameAs) $data['sameAs'] = $sameAs;
         if ($rating['count'] > 0) {
             $data['aggregateRating'] = [
                 '@type' => 'AggregateRating',
@@ -65,6 +77,6 @@ class HomeController extends Controller
                 'reviewCount' => $rating['count'],
             ];
         }
-        return '<script type="application/ld+json">' . json_encode($data, JSON_UNESCAPED_SLASHES) . '</script>';
+        return '<script type="application/ld+json">' . json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
     }
 }

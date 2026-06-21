@@ -9,6 +9,23 @@ $defaultOut = date('Y-m-d', strtotime('+9 days'));
     'heroImage' => $room['cover'] ?? 'general/beach',
     'crumbs'    => ['Accommodations' => url('/accommodations'), $room['name'] => null],
 ]) ?>
+<?php
+$roomLd = [
+  '@context' => 'https://schema.org',
+  '@type'    => 'Product',
+  'name'     => $room['name'],
+  'description' => $room['summary'] ?: strip_tags((string)($room['description'] ?? '')),
+  'image'    => site_url(img_url($room['cover'] ?? null, 'full')),
+  'offers'   => [
+    '@type'         => 'Offer',
+    'price'         => (float) $room['base_price'],
+    'priceCurrency' => 'PHP',
+    'availability'  => 'https://schema.org/InStock',
+    'url'           => site_url('/accommodations/' . $room['slug']),
+  ],
+];
+?>
+<script type="application/ld+json"><?= json_encode($roomLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 
 <section class="section">
   <div class="container">
