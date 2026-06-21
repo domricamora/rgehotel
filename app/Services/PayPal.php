@@ -76,6 +76,38 @@ class PayPal
         throw new \RuntimeException('PayPal: approval URL not found');
     }
 
+    public function webhookId(): string
+    {
+        return (string) ($this->cfg['webhook_id'] ?? '');
+    }
+
+    /**
+     * Verify an inbound webhook against PayPal (signature check via the
+     * verify-webhook-signature API). Returns false if no webhook_id is set.
+     * @param array $headers ['auth_algo','cert_url','transmission_id','transmission_sig','transmission_time']
+     * @param array $event   the decoded webhook event body
+     */
+    public function verifyWebhookSignature(array $headers, array $event): bool
+    {
+        $webhookId = $this->webhookId();
+        if (!$webhookId || str_contains($webhookId, 'REPLACE')) return false;
+        try {
+            $resp = $this->request('POST', '/v1/notifications/verify-webhook-signature', [
+                'auth_algo'         => $headers['auth_algo'] ?? '',
+                'cert_url'          => $headers['cert_url'] ?? '',
+                'transmission_id'   => $headers['transmission_id'] ?? '',
+                'transmission_sig'  => $headers['transmission_sig'] ?? '',
+                'transmission_time' => $headers['transmission_time'] ?? '',
+                'webhook_id'        => $webhookId,
+                'webhook_event'     => $event,
+            ]);
+        } catch (\Throwable $e) {
+            logger('PayPal verify-webhook error: ' . $e->getMessage(), 'error');
+            return false;
+        }
+        return ($resp['verification_status'] ?? '') === 'SUCCESS';
+    }
+
     private function request(string $method, string $path, array $body): array
     {
         $ch = curl_init($this->base . $path);

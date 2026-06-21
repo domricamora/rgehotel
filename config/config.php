@@ -59,6 +59,7 @@ $config = [
             'mode'           => 'sandbox', // sandbox | live
             'client_id'      => 'REPLACE_ME_PAYPAL_CLIENT_ID',
             'client_secret'  => 'REPLACE_ME_PAYPAL_CLIENT_SECRET',
+            'webhook_id'     => 'REPLACE_ME_PAYPAL_WEBHOOK_ID', // from PayPal dashboard / API
         ],
     ],
 

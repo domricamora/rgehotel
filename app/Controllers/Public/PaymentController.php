@@ -134,6 +134,59 @@ class PaymentController extends Controller
         return $this->abort(404, 'Booking not found');
     }
 
+    /**
+     * PayPal webhook — capture backstop for buyers who approve but never return.
+     * Verifies the signature, then settles on CHECKOUT.ORDER.APPROVED (capturing
+     * first) or PAYMENT.CAPTURE.COMPLETED. Idempotent.
+     */
+    public function paypalWebhook(): string
+    {
+        $raw = file_get_contents('php://input');
+        $event = json_decode($raw, true) ?: [];
+        $type = $event['event_type'] ?? '';
+
+        try {
+            $paypal = new PayPal();
+            if (!$paypal->isConfigured() || !$paypal->webhookId()) {
+                return $this->json(['ok' => true, 'skipped' => 'paypal webhook not configured']);
+            }
+            $headers = [
+                'auth_algo'         => $_SERVER['HTTP_PAYPAL_AUTH_ALGO'] ?? '',
+                'cert_url'          => $_SERVER['HTTP_PAYPAL_CERT_URL'] ?? '',
+                'transmission_id'   => $_SERVER['HTTP_PAYPAL_TRANSMISSION_ID'] ?? '',
+                'transmission_sig'  => $_SERVER['HTTP_PAYPAL_TRANSMISSION_SIG'] ?? '',
+                'transmission_time' => $_SERVER['HTTP_PAYPAL_TRANSMISSION_TIME'] ?? '',
+            ];
+            if (!$paypal->verifyWebhookSignature($headers, $event)) {
+                http_response_code(400);
+                logger('PayPal webhook: signature verification FAILED (' . $type . ')', 'payments');
+                return $this->json(['ok' => false, 'error' => 'invalid signature']);
+            }
+
+            $res = $event['resource'] ?? [];
+            $orderId = $res['supplementary_data']['related_ids']['order_id']
+                ?? ($type === 'CHECKOUT.ORDER.APPROVED' ? ($res['id'] ?? null) : null);
+
+            if ($orderId) {
+                $payment = $this->db->first('SELECT * FROM payments WHERE external_id = ?', [$orderId]);
+                if ($payment && $payment['status'] !== 'paid') {
+                    if ($type === 'CHECKOUT.ORDER.APPROVED') {
+                        $cap = $paypal->captureOrder($orderId);
+                        if (($cap['status'] ?? '') !== 'COMPLETED') {
+                            return $this->json(['ok' => true, 'note' => 'capture not completed']);
+                        }
+                    }
+                    $this->db->update('payments', ['status' => 'paid', 'updated_at' => date('c')], ['id' => $payment['id']]);
+                    Folio::reconcile((int) $payment['booking_id']);
+                    logger('PayPal webhook: booking ' . $payment['booking_id'] . ' settled via ' . $type, 'payments');
+                }
+            }
+        } catch (\Throwable $e) {
+            logger('PayPal webhook error: ' . $e->getMessage(), 'error');
+        }
+        return $this->json(['ok' => true]);
+    }
+
     public function genericReturn(string $ref): string
     {
         redirect('/booking/' . $ref . '/confirmation');
