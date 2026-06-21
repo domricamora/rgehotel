@@ -100,13 +100,14 @@ echo "  " . count($manifest['amenities']) . " amenity images\n";
 echo "== General / hero ==\n";
 // Hero stills render at $HERO_WIDTHS; drop a higher-resolution Kalanggaman file at
 // hero-kalanggaman.jpg (preferred) and it becomes the hero poster/fallback.
-$heroKeys = ['hero-island', 'kalanggaman'];
+$heroKeys = ['hero-island', 'kalanggaman', 'offers-hero'];
 $general = [
     'hero-island'   => is_file("$SRC/hero-kalanggaman.jpg") ? "$SRC/hero-kalanggaman.jpg" : "$SRC/13-kalanggaman-island-secondary-banner.jpg",
     'beach'         => "$SRC/beach.jpg",
     'kalanggaman'   => is_file("$SRC/hero-kalanggaman.jpg") ? "$SRC/hero-kalanggaman.jpg" : "$SRC/kalanggaman-island_1440.jpg",
     'aerial'        => "$SRC/jc-gellidon-80GJUuOhXgA-unsplash.jpg",
     'sunset'        => "$SRC/chris-kursikowski-AGpzugP0SeQ-unsplash.jpg",
+    'offers-hero'   => "$SRC/offers-hero.jpg",
 ];
 foreach ($general as $name => $f) {
     $widths = in_array($name, $heroKeys, true) ? $HERO_WIDTHS : $WIDTHS;

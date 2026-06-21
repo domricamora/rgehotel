@@ -2,7 +2,7 @@
 <?= partial('partials.page-hero', [
     'pageTitle' => 'Special Offers',
     'pageSub'   => 'Save more on your island escape with our current promotions.',
-    'heroImage' => 'general/beach',
+    'heroImage' => 'general/offers-hero',
     'crumbs'    => ['Offers' => null],
 ]) ?>
 <section class="section">
