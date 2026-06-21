@@ -14,17 +14,25 @@
     });
   }
 
-  // Scroll reveal
+  // Scroll reveal — with failsafes so content never stays hidden
   var reveals = document.querySelectorAll('.reveal');
+  function reveal(el) { el.classList.add('in'); }
+  function inView(el) {
+    var r = el.getBoundingClientRect();
+    return r.top < (window.innerHeight || document.documentElement.clientHeight) + 80;
+  }
   if ('IntersectionObserver' in window && reveals.length) {
     var obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); obs.unobserve(en.target); }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(function (el) { obs.observe(el); });
+      entries.forEach(function (en) { if (en.isIntersecting) { reveal(en.target); obs.unobserve(en.target); } });
+    }, { threshold: 0.08 });
+    reveals.forEach(function (el) {
+      if (inView(el)) reveal(el);      // anything on screen at load shows immediately
+      else obs.observe(el);
+    });
+    // Failsafe: never leave content hidden if the observer doesn't fire
+    window.addEventListener('load', function () { setTimeout(function () { reveals.forEach(reveal); }, 1500); });
   } else {
-    reveals.forEach(function (el) { el.classList.add('in'); });
+    reveals.forEach(reveal);
   }
 
   // Lightweight lightbox for [data-lightbox] anchors

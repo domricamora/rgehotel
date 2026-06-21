@@ -261,6 +261,7 @@ p { color: var(--slate); }
 /* Utilities */
 .mt-0{margin-top:0}.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}.mt-4{margin-top:32px}
 .flex{display:flex}.items-center{align-items:center}.gap-2{gap:16px}.wrap{flex-wrap:wrap}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
+/* Reveal-on-scroll only hides when JS is active, so no-JS users always see content */
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.js .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){ .js .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
