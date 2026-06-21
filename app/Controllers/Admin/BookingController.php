@@ -2,6 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Models\Folio;
 
 class BookingController extends Controller
 {
@@ -26,6 +27,9 @@ class BookingController extends Controller
         return $this->view('admin.booking-show', [
             'active' => 'bookings', 'pageTitle' => 'Booking ' . $b['reference'],
             'b' => $b, 'payments' => $payments,
+            'charges' => Folio::charges((int) $b['id']),
+            'folio' => Folio::summary($b),
+            'categories' => Folio::CATEGORIES,
         ], 'admin');
     }
 

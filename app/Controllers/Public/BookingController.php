@@ -94,11 +94,9 @@ class BookingController extends Controller
         }
         $room = RoomType::find((int)$booking['room_type_id']);
         $xendit = config('payments.xendit');
-        $paypal = config('payments.paypal');
         return $this->view('public.booking-pay', [
             'active' => '', 'booking' => $booking, 'room' => $room,
             'xenditReady' => $xendit['enabled'] && !str_contains($xendit['secret_key'], 'REPLACE'),
-            'paypalReady' => $paypal['enabled'] && !str_contains($paypal['client_id'], 'REPLACE'),
             'sandbox' => true,
             'title' => 'Payment — ' . $ref,
         ]);

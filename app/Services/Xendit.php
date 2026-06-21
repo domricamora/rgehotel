@@ -20,16 +20,40 @@ class Xendit
             && !str_contains($this->cfg['secret_key'], 'REPLACE');
     }
 
+    /** Invoice for the full room booking total (initial reservation payment). */
     public function createInvoice(array $booking): array
     {
+        return $this->createCustomInvoice(
+            $booking,
+            (float) $booking['total'],
+            $booking['reference'],
+            'RGE Hotel booking ' . $booking['reference'],
+            url('/booking/' . $booking['reference'] . '/confirmation'),
+            url('/booking/' . $booking['reference'] . '/pay')
+        );
+    }
+
+    /**
+     * Invoice for an arbitrary amount against a booking — used to settle an
+     * in-house folio balance (room service, amenities, other charges) online.
+     * The external_id must be unique per Xendit invoice.
+     */
+    public function createCustomInvoice(
+        array $booking,
+        float $amount,
+        string $externalId,
+        string $description,
+        string $successUrl,
+        string $failureUrl
+    ): array {
         $payload = [
-            'external_id'           => $booking['reference'],
-            'amount'                => (float) $booking['total'],
+            'external_id'           => $externalId,
+            'amount'                => round($amount, 2),
             'currency'              => $booking['currency'] ?: 'PHP',
             'payer_email'           => $booking['guest_email'],
-            'description'           => 'RGE Hotel booking ' . $booking['reference'],
-            'success_redirect_url'  => url('/booking/' . $booking['reference'] . '/confirmation'),
-            'failure_redirect_url'  => url('/booking/' . $booking['reference'] . '/pay'),
+            'description'           => $description,
+            'success_redirect_url'  => $successUrl,
+            'failure_redirect_url'  => $failureUrl,
         ];
         return $this->request('POST', 'https://api.xendit.co/v2/invoices', $payload);
     }

@@ -16,7 +16,7 @@ class SettingsController extends Controller
     public function save(): string
     {
         $this->requirePost();
-        $keys = ['hero_headline','hero_subhead','intro_heading','intro_body',
+        $keys = ['hero_headline','hero_subhead','hero_image','hero_video','intro_heading','intro_body',
             'contact_email','contact_phone','contact_address','facebook_url','instagram_url'];
         foreach ($keys as $k) {
             Setting::set($k, (string)$this->input($k, ''));

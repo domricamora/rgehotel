@@ -270,7 +270,7 @@ foreach ($offers as $o) {
     [$slug,$title,$subtitle,$desc,$type,$val,$code,$feat,$rts] = $o;
     $oid = $db->insert('offers', [
         'slug'=>$slug,'title'=>$title,'subtitle'=>$subtitle,'description'=>$desc,'discount_type'=>$type,
-        'discount_value'=>$val,'code'=>$code,'image'=>$manifest['general']['beach'] ?? null,
+        'discount_value'=>$val,'code'=>$code,'image'=>$manifest['offers'][$slug] ?? ($manifest['general']['beach'] ?? null),
         'starts_at'=>date('Y-m-d'),'ends_at'=>date('Y-m-d', strtotime('+6 months')),
         'is_published'=>1,'is_featured'=>$feat,'sort_order'=>$sort++,
     ]);

@@ -35,9 +35,11 @@ return function (Router $r) {
     $r->get('/booking/{ref}/pay',        'Public\BookingController@pay');
     $r->post('/booking/{ref}/pay',       'Public\PaymentController@process');
     $r->get('/booking/{ref}/confirmation','Public\BookingController@confirmation');
+    // Guest folio: in-house charges + online balance settlement
+    $r->get('/booking/{ref}/billing',    'Public\BillingController@show');
+    $r->post('/booking/{ref}/billing/pay','Public\BillingController@pay');
     // Gateway callbacks / webhooks
     $r->any('/payment/xendit/webhook',   'Public\PaymentController@xenditWebhook');
-    $r->get('/payment/paypal/return',    'Public\PaymentController@paypalReturn');
     $r->get('/payment/return/{ref}',     'Public\PaymentController@genericReturn');
 
     /* -------------------- Admin auth -------------------- */
@@ -51,6 +53,10 @@ return function (Router $r) {
     $r->get('/admin/bookings',           'Admin\BookingController@index',  ['auth', 'permission:bookings.view']);
     $r->get('/admin/bookings/{id}',      'Admin\BookingController@show',   ['auth', 'permission:bookings.view']);
     $r->post('/admin/bookings/{id}',     'Admin\BookingController@update', ['auth', 'permission:bookings.manage']);
+    // Folio: in-house charges + cash settlement
+    $r->post('/admin/bookings/{id}/charges',            'Admin\FolioController@addCharge',   ['auth', 'permission:bookings.manage']);
+    $r->post('/admin/bookings/{id}/charges/{cid}/void', 'Admin\FolioController@voidCharge',   ['auth', 'permission:bookings.manage']);
+    $r->post('/admin/bookings/{id}/settle',             'Admin\FolioController@settleCash',   ['auth', 'permission:bookings.manage']);
 
     $r->get('/admin/rooms',              'Admin\RoomController@index',     ['auth', 'permission:rooms.view']);
     $r->get('/admin/rooms/{id}',         'Admin\RoomController@edit',      ['auth', 'permission:rooms.manage']);

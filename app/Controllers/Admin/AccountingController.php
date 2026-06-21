@@ -5,6 +5,7 @@ use App\Core\Controller;
 use App\Core\Auth;
 use App\Models\Accounting;
 use App\Models\Booking;
+use App\Models\Folio;
 
 class AccountingController extends Controller
 {
@@ -208,8 +209,12 @@ class AccountingController extends Controller
         $b = $this->db->first('SELECT b.*, rt.name AS room_name FROM bookings b JOIN room_types rt ON rt.id=b.room_type_id WHERE b.id=?', [$id]);
         if (!$b) return $this->abort(404, 'Booking not found');
         $payments = $this->db->all('SELECT * FROM payments WHERE booking_id=? ORDER BY id', [$id]);
+        $charges = Folio::charges((int) $b['id']);
+        $folio = Folio::summary($b);
         return $this->view('admin.accounting.invoice', [
-            'b' => $b, 'payments' => $payments, 'vat' => vat_breakdown($b['total']),
+            'b' => $b, 'payments' => $payments,
+            'charges' => $charges, 'folio' => $folio,
+            'vat' => vat_breakdown($folio['grand_total']),
         ], 'print');
     }
 }

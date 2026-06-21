@@ -11,6 +11,8 @@ ini_set('memory_limit', '1024M');
 $SRC = 'C:/Users/Nick/Documents/rge';
 $OUT = __DIR__ . '/../assets/img';
 $WIDTHS = ['thumb' => 600, 'full' => 1400];
+// Hero imagery is shown full-bleed on large screens — render it sharper.
+$HERO_WIDTHS = ['thumb' => 900, 'full' => 2000];
 
 function loadImage(string $path) {
     $info = @getimagesize($path);
@@ -96,15 +98,19 @@ foreach (array_slice($amenityFiles, 0, 12) as $f) {
 echo "  " . count($manifest['amenities']) . " amenity images\n";
 
 echo "== General / hero ==\n";
+// Hero stills render at $HERO_WIDTHS; drop a higher-resolution Kalanggaman file at
+// hero-kalanggaman.jpg (preferred) and it becomes the hero poster/fallback.
+$heroKeys = ['hero-island', 'kalanggaman'];
 $general = [
-    'hero-island'   => "$SRC/13-kalanggaman-island-secondary-banner.jpg",
+    'hero-island'   => is_file("$SRC/hero-kalanggaman.jpg") ? "$SRC/hero-kalanggaman.jpg" : "$SRC/13-kalanggaman-island-secondary-banner.jpg",
     'beach'         => "$SRC/beach.jpg",
-    'kalanggaman'   => "$SRC/kalanggaman-island_1440.jpg",
+    'kalanggaman'   => is_file("$SRC/hero-kalanggaman.jpg") ? "$SRC/hero-kalanggaman.jpg" : "$SRC/kalanggaman-island_1440.jpg",
     'aerial'        => "$SRC/jc-gellidon-80GJUuOhXgA-unsplash.jpg",
     'sunset'        => "$SRC/chris-kursikowski-AGpzugP0SeQ-unsplash.jpg",
 ];
 foreach ($general as $name => $f) {
-    if (is_file($f) && emit($f, "$OUT/general/$name", $WIDTHS)) {
+    $widths = in_array($name, $heroKeys, true) ? $HERO_WIDTHS : $WIDTHS;
+    if (is_file($f) && emit($f, "$OUT/general/$name", $widths)) {
         $manifest['general'][$name] = "general/$name";
         echo "  $name\n";
     }
@@ -129,6 +135,21 @@ foreach ($serviceImg as $slug => $f) {
     if (is_file($f) && emit($f, "$OUT/services/$slug", $WIDTHS)) {
         $manifest['services'][$slug] = "services/$slug";
         echo "  $slug\n";
+    }
+}
+
+echo "== Offers (one photo per promotion) ==\n";
+// Drop a stock (e.g. Unsplash) JPG per offer at $SRC/offers/<slug>.jpg.
+// Missing files are skipped and the offer falls back to the beach image.
+$manifest['offers'] = [];
+$offerSlugs = ['early-bird', 'stay-3-pay-2', 'summer-splash'];
+foreach ($offerSlugs as $slug) {
+    $f = "$SRC/offers/$slug.jpg";
+    if (is_file($f) && emit($f, "$OUT/offers/$slug", $WIDTHS)) {
+        $manifest['offers'][$slug] = "offers/$slug";
+        echo "  $slug\n";
+    } else {
+        echo "  (missing) offers/$slug.jpg\n";
     }
 }
 

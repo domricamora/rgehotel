@@ -1,8 +1,10 @@
 <?php
 use App\Models\Setting;
-/** @var array $b @var array $payments @var array $vat */
-$paid = 0; foreach ($payments as $p) if ($p['status']==='paid') $paid += (float)$p['amount'];
-$balance = (float)$b['total'] - $paid;
+use App\Models\Folio;
+/** @var array $b @var array $payments @var array $vat @var array $charges @var array $folio */
+$grandTotal = $folio['grand_total'];
+$paid = $folio['paid'];
+$balance = $folio['balance'];
 ?>
 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
   <div>
@@ -34,15 +36,25 @@ $balance = (float)$b['total'] - $paid;
   <tbody>
     <tr style="border-bottom:1px solid #e7e0d2"><td style="padding:12px 0"><?= e($b['room_name']) ?> — <?= (int)$b['nights'] ?> night(s)<?php if($b['offer_code']):?> <span style="color:#948a7a">(<?= e($b['offer_code']) ?>)</span><?php endif;?></td><td style="text-align:center"><?= (int)$b['rooms_count'] ?></td><td style="text-align:right"><?= money($b['subtotal']) ?></td></tr>
     <?php if($b['discount']>0):?><tr style="border-bottom:1px solid #e7e0d2"><td style="padding:12px 0;color:#9b2226">Discount</td><td></td><td style="text-align:right;color:#9b2226">−<?= money($b['discount']) ?></td></tr><?php endif;?>
+    <?php if($charges):?>
+      <tr><td colspan="3" style="padding:14px 0 4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:#948a7a">In-house charges</td></tr>
+      <?php foreach($charges as $c):?>
+      <tr style="border-bottom:1px solid #e7e0d2"><td style="padding:10px 0"><?= e($c['description']) ?> <span style="color:#948a7a">(<?= e(Folio::categoryLabel($c['category'])) ?>)</span></td><td style="text-align:center"><?= rtrim(rtrim(number_format((float)$c['quantity'],2),'0'),'.') ?></td><td style="text-align:right"><?= money($c['amount']) ?></td></tr>
+      <?php endforeach;?>
+    <?php endif;?>
   </tbody>
 </table>
 
 <div style="display:flex;justify-content:flex-end">
   <table style="font-size:.92rem;min-width:280px">
     <tbody>
+      <?php if($folio['charges_total']>0):?>
+      <tr><td style="padding:5px 0;color:#5e564a">Room</td><td style="text-align:right"><?= money($folio['room_total']) ?></td></tr>
+      <tr><td style="padding:5px 0;color:#5e564a">In-house charges</td><td style="text-align:right"><?= money($folio['charges_total']) ?></td></tr>
+      <?php endif;?>
       <tr><td style="padding:5px 0;color:#5e564a">VATable sales (net)</td><td style="text-align:right"><?= money($vat['net']) ?></td></tr>
       <tr><td style="padding:5px 0;color:#5e564a">VAT (<?= e($vat['rate']) ?>%)</td><td style="text-align:right"><?= money($vat['vat']) ?></td></tr>
-      <tr style="border-top:2px solid #2b2620"><td style="padding:8px 0;font-weight:700;font-size:1.05rem">Total</td><td style="text-align:right;font-weight:700;font-size:1.05rem"><?= money($b['total']) ?></td></tr>
+      <tr style="border-top:2px solid #2b2620"><td style="padding:8px 0;font-weight:700;font-size:1.05rem">Total</td><td style="text-align:right;font-weight:700;font-size:1.05rem"><?= money($grandTotal) ?></td></tr>
       <tr><td style="padding:5px 0;color:#14653b">Paid</td><td style="text-align:right;color:#14653b"><?= money($paid) ?></td></tr>
       <?php if($balance>0):?><tr><td style="padding:5px 0;font-weight:700;color:#9a6a00">Balance due</td><td style="text-align:right;font-weight:700;color:#9a6a00"><?= money($balance) ?></td></tr><?php endif;?>
     </tbody>

@@ -1,7 +1,8 @@
 # RGE Hotel & Restaurant Management System
 
 A chic, modern, island-themed hotel website with an online booking engine, sandbox
-payment processing (Xendit + PayPal), and a full role-based management backend.
+payment processing (Xendit), in-house folio billing (room service / amenities / other
+room charges with online settlement), and a full role-based management backend.
 
 Beachfront hotel in **Palompon, Leyte** — gateway to **Kalanggaman Island**.
 
@@ -53,13 +54,27 @@ Sandbox-ready. Add keys in `config/config.local.php` (gitignored):
 <?php return [
   'payments' => [
     'xendit' => ['secret_key' => 'xnd_development_...', 'webhook_token' => '...'],
-    'paypal' => ['client_id' => '...', 'client_secret' => '...', 'mode' => 'sandbox'],
   ],
 ];
 ```
 Until real keys are set, the pay page runs a **simulated** sandbox payment (no charge)
-so the booking flow is fully testable. Webhooks: `/payment/xendit/webhook`,
-PayPal return: `/payment/paypal/return`.
+so the booking flow is fully testable. Webhook: `/payment/xendit/webhook`.
+
+Guests can settle their in-house folio (room charges added by the front desk) online
+at `/booking/{ref}/billing`; staff post and settle charges from the booking detail page.
+
+## Media (self-hosted, no CDN)
+Stock photos live as JPGs under `C:/Users/Nick/Documents/rge`, are normalized to WebP by
+`scripts/image-normalize.php`, and committed under `assets/img/`. To refresh:
+
+- **Higher-res Kalanggaman hero still:** drop `hero-kalanggaman.jpg` in the source root, then
+  `php scripts/image-normalize.php` (hero stills render at 2000w → `general/hero-island`).
+- **Per-offer photos:** drop `offers/early-bird.jpg`, `offers/stay-3-pay-2.jpg`,
+  `offers/summer-splash.jpg` in the source folder, run `image-normalize.php`, then
+  `php scripts/assign-offer-images.php` (updates `offers.image` in place — does **not** reseed).
+- **Hero background video:** drop `hero.mp4` in `assets/video/` (see that folder's README for
+  encode specs), then set **Admin → Settings → Hero background video** to `video/hero.mp4`.
+  The hero falls back to the still poster on mobile / reduced-motion / when no video is set.
 
 ## Notes
 - Restaurant page is **unpublished** by default (toggle in Admin → Settings / Restaurant).

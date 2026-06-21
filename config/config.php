@@ -53,12 +53,6 @@ $config = [
             'success_url'    => null,      // computed at runtime
             'failure_url'    => null,
         ],
-        'paypal' => [
-            'enabled'        => true,
-            'mode'           => 'sandbox', // sandbox | live
-            'client_id'      => 'REPLACE_ME_PAYPAL_CLIENT_ID',
-            'client_secret'  => 'REPLACE_ME_PAYPAL_CLIENT_SECRET',
-        ],
     ],
 
     'mail' => [

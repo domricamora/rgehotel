@@ -6,6 +6,8 @@ $s = fn($k, $d = '') => e($settings[$k] ?? $d);
   <div class="panel"><div class="panel__head"><h2>Homepage</h2></div><div class="panel__body"><div class="form-grid">
     <div class="field full"><label>Hero headline</label><input name="hero_headline" value="<?= $s('hero_headline') ?>"></div>
     <div class="field full"><label>Hero subheading</label><input name="hero_subhead" value="<?= $s('hero_subhead') ?>"></div>
+    <div class="field"><label>Hero image (poster / fallback)</label><input name="hero_image" value="<?= $s('hero_image','general/hero-island') ?>" placeholder="general/hero-island"><small class="muted">Normalized image base, e.g. <code>general/hero-island</code>.</small></div>
+    <div class="field"><label>Hero background video</label><input name="hero_video" value="<?= $s('hero_video') ?>" placeholder="video/hero.mp4"><small class="muted">Path under <code>assets/</code>, e.g. <code>video/hero.mp4</code>. Leave blank to use the image only.</small></div>
     <div class="field full"><label>Intro heading</label><input name="intro_heading" value="<?= $s('intro_heading') ?>"></div>
     <div class="field full"><label>Intro body</label><textarea name="intro_body" rows="3"><?= $s('intro_body') ?></textarea></div>
   </div></div></div>
