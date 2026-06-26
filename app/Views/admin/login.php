@@ -10,6 +10,5 @@
       <div class="field mt-2"><label>Password</label><input type="password" name="password" required></div>
       <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Sign In</button>
     </form>
-    <p class="muted" style="text-align:center;font-size:.8rem;margin-top:18px">Demo: admin@rgehotel.com / password</p>
   </div>
 </div>
