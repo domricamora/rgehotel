@@ -31,18 +31,6 @@ class PaymentController extends Controller
                 return $this->simulate($booking, 'xendit');
             }
 
-            if ($method === 'paypal') {
-                $paypal = new PayPal();
-                if ($paypal->isConfigured()) {
-                    $order = $paypal->createOrder($booking);
-                    $approve = $paypal->approvalUrl($order);
-                    $this->recordPayment($booking, 'paypal', 'pending', $order['id'] ?? null, $approve, $order);
-                    redirect($approve);
-                    return '';
-                }
-                return $this->simulate($booking, 'paypal');
-            }
-
             // Pay-at-hotel / reserve without online payment.
             if ($method === 'reserve') {
                 $this->db->update('bookings', ['status' => 'confirmed', 'updated_at' => date('c')], ['id' => $booking['id']]);
