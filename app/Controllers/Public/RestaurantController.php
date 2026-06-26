@@ -24,6 +24,29 @@ class RestaurantController extends Controller
             'menu'   => Content::menu(),
             'title'  => 'Restaurant — RGE Hotel',
             'metaDescription' => 'Fresh seafood and Filipino favourites by the beach at RGE Hotel restaurant.',
+            'jsonld' => $this->jsonLd(),
         ]);
+    }
+
+    private function jsonLd(): string
+    {
+        $h = config('hotel');
+        $data = array_filter([
+            '@context'      => 'https://schema.org',
+            '@type'         => 'Restaurant',
+            'name'          => 'RGE Hotel Restaurant',
+            'description'   => 'Fresh seafood and Filipino favourites by the beach at RGE Hotel.',
+            'url'           => site_url('/restaurant'),
+            'servesCuisine' => ['Filipino', 'Seafood'],
+            'priceRange'    => '₱₱',
+            'telephone'     => Setting::get('contact_phone', $h['phone'] ?? '') ?: null,
+            'address'       => array_filter([
+                '@type'           => 'PostalAddress',
+                'addressLocality' => $h['locality'],
+                'addressRegion'   => $h['region'],
+                'addressCountry'  => $h['country'],
+            ]),
+        ]);
+        return jsonld($data);
     }
 }

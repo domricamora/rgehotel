@@ -33,6 +33,7 @@ class BookingController extends Controller
             'adults' => (int)$this->input('adults', $room['adults']),
             'children' => (int)$this->input('children', 0),
             'title' => 'Book ' . $room['name'] . ' — RGE Hotel',
+            'noindex' => true,
         ]);
     }
 
@@ -99,6 +100,7 @@ class BookingController extends Controller
             'xenditReady' => $xendit['enabled'] && !str_contains($xendit['secret_key'], 'REPLACE'),
             'sandbox' => true,
             'title' => 'Payment — ' . $ref,
+            'noindex' => true,
         ]);
     }
 
@@ -110,6 +112,7 @@ class BookingController extends Controller
         return $this->view('public.booking-confirmation', [
             'active' => '', 'booking' => $booking, 'room' => $room,
             'title' => 'Booking Confirmed — ' . $ref,
+            'noindex' => true,
         ]);
     }
 }

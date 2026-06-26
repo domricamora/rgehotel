@@ -5,3 +5,4 @@ Disallow: /booking
 Disallow: /payment
 
 Sitemap: https://rgehotel.com/sitemap.xml
+Sitemap: https://rgehotel.com/sitemap.rss

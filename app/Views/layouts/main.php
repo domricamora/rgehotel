@@ -29,16 +29,23 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="0ljiej6EDAVcP4thTWqKqHROzpTctuRuSdf7Dc2IpH0">
+<?php if (!empty($noindex)): ?><meta name="robots" content="noindex, follow"><?php else: ?><meta name="robots" content="index, follow, max-image-preview:large"><?php endif; ?>
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= e($metaDescription) ?>">
 <link rel="canonical" href="<?= e($canonical) ?>">
-<meta property="og:type" content="website">
+<link rel="alternate" type="application/rss+xml" title="RGE Hotel" href="<?= e(site_url('/sitemap.rss')) ?>">
+<meta property="og:type" content="<?= e($ogType ?? 'website') ?>">
 <meta property="og:url" content="<?= e($canonical) ?>">
 <meta property="og:title" content="<?= e($title) ?>">
 <meta property="og:description" content="<?= e($metaDescription) ?>">
 <meta property="og:image" content="<?= e($ogImage) ?>">
+<meta property="og:image:alt" content="<?= e($title) ?>">
+<meta property="og:locale" content="en_PH">
 <meta property="og:site_name" content="RGE Hotel">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= e($title) ?>">
+<meta name="twitter:description" content="<?= e($metaDescription) ?>">
+<meta name="twitter:image" content="<?= e($ogImage) ?>">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= e(asset('img/favicon-32.png')) ?>">
 <link rel="apple-touch-icon" href="<?= e(asset('img/apple-touch-icon.png')) ?>">
 <meta name="theme-color" content="#6a7548">

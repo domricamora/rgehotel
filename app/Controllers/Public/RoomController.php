@@ -55,20 +55,23 @@ class RoomController extends Controller
 
     private function jsonLd(array $room, ?string $cover): string
     {
-        $data = [
+        $data = array_filter([
             '@context' => 'https://schema.org',
             '@type'    => 'HotelRoom',
             'name'     => $room['name'],
             'description' => $room['summary'],
+            'url'       => site_url('/accommodations/' . $room['slug']),
+            'bed'       => $room['beds'] ?: null,
             'occupancy' => ['@type' => 'QuantitativeValue', 'maxValue' => $room['max_occupancy']],
-            'image'     => $cover ? url('assets/img/' . $cover . '-full.webp') : null,
+            'image'     => $cover ? site_url('assets/img/' . $cover . '-full.webp') : null,
             'offers'    => [
                 '@type' => 'Offer',
-                'price' => $room['base_price'],
+                'price' => (string) (float) $room['base_price'],
                 'priceCurrency' => 'PHP',
                 'availability' => 'https://schema.org/InStock',
+                'url'   => site_url('/accommodations/' . $room['slug']),
             ],
-        ];
-        return '<script type="application/ld+json">' . json_encode($data, JSON_UNESCAPED_SLASHES) . '</script>';
+        ]);
+        return jsonld($data);
     }
 }

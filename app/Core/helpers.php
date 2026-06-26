@@ -237,6 +237,16 @@ if (!function_exists('stars')) {
     }
 }
 
+if (!function_exists('jsonld')) {
+    /** Wrap a data array as a JSON-LD <script> block (for SEO structured data). */
+    function jsonld(array $data): string
+    {
+        return '<script type="application/ld+json">'
+            . json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            . '</script>';
+    }
+}
+
 if (!function_exists('logger')) {
     function logger(string $message, string $channel = 'app'): void
     {

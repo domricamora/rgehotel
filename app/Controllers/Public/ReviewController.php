@@ -8,13 +8,54 @@ class ReviewController extends Controller
 {
     public function index(): string
     {
+        $reviews = Content::reviews(null, null, 60);
+        $rating  = Content::ratingSummary();
         return $this->view('public.reviews-index', [
             'active'  => 'reviews',
-            'reviews' => Content::reviews(null, null, 60),
-            'rating'  => Content::ratingSummary(),
+            'reviews' => $reviews,
+            'rating'  => $rating,
             'title'   => 'Guest Reviews — RGE Hotel',
             'metaDescription' => 'Read what guests say about their stay at RGE Hotel near Kalanggaman Island, Leyte.',
+            'jsonld'  => $this->jsonLd($rating, $reviews),
         ]);
+    }
+
+    private function jsonLd(array $rating, array $reviews): string
+    {
+        $data = [
+            '@context' => 'https://schema.org',
+            '@type'    => 'Hotel',
+            'name'     => 'RGE Hotel',
+            'url'      => site_url('/'),
+            'image'    => site_url('assets/img/general/hero-island-full.webp'),
+        ];
+        if (($rating['count'] ?? 0) > 0) {
+            $data['aggregateRating'] = [
+                '@type'       => 'AggregateRating',
+                'ratingValue' => $rating['avg'],
+                'reviewCount' => $rating['count'],
+                'bestRating'  => 5,
+                'worstRating' => 1,
+            ];
+        }
+        $items = [];
+        foreach (array_slice($reviews, 0, 10) as $rv) {
+            $items[] = array_filter([
+                '@type'         => 'Review',
+                'name'          => $rv['title'] ?: null,
+                'reviewBody'    => $rv['body'] ?? null,
+                'datePublished' => !empty($rv['created_at']) ? substr((string) $rv['created_at'], 0, 10) : null,
+                'author'        => ['@type' => 'Person', 'name' => $rv['author_name'] ?? 'Guest'],
+                'reviewRating'  => [
+                    '@type'       => 'Rating',
+                    'ratingValue' => $rv['rating'],
+                    'bestRating'  => 5,
+                    'worstRating' => 1,
+                ],
+            ]);
+        }
+        if ($items) $data['review'] = $items;
+        return jsonld($data);
     }
 
     public function store(): string

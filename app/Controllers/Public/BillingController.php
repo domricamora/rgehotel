@@ -29,6 +29,7 @@ class BillingController extends Controller
             'summary'     => Folio::summary($booking),
             'xenditReady' => ($xendit['enabled'] ?? false) && !str_contains($xendit['secret_key'] ?? '', 'REPLACE'),
             'title'       => 'Your bill — ' . $ref,
+            'noindex'     => true,
         ]);
     }
 

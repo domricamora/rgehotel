@@ -29,6 +29,7 @@ return function (Router $r) {
     $r->get('/restaurant',               'Public\RestaurantController@index');
     $r->post('/subscribe',               'Public\HomeController@subscribe');
     $r->get('/sitemap.xml',              'Public\SitemapController@index');
+    $r->get('/sitemap.rss',              'Public\SitemapController@rss');
 
     /* -------------------- Booking + payments -------------------- */
     $r->get('/booking/{slug}',           'Public\BookingController@create');
