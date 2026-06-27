@@ -2,6 +2,8 @@
 <div class="panel">
   <div class="panel__head">
     <h2>All Bookings</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+    <a class="btn btn-primary btn-sm" href="<?= e(url('/admin/bookings/new')) ?>"><?= icon('check') ?> New walk-in booking</a>
     <form method="get" style="display:flex;gap:8px">
       <select name="status" class="field" style="padding:8px 12px;border:1px solid var(--line);border-radius:0" onchange="this.form.submit()">
         <option value="">All statuses</option>
@@ -10,6 +12,7 @@
         <?php endforeach; ?>
       </select>
     </form>
+    </div>
   </div>
   <div class="table-wrap">
     <table>

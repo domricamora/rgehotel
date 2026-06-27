@@ -55,6 +55,8 @@ return function (Router $r) {
     $r->get('/admin',                    'Admin\DashboardController@index', ['auth']);
 
     $r->get('/admin/bookings',           'Admin\BookingController@index',  ['auth', 'permission:bookings.view']);
+    $r->get('/admin/bookings/new',       'Admin\BookingController@createForm', ['auth', 'permission:bookings.manage']);
+    $r->post('/admin/bookings/new',      'Admin\BookingController@store',      ['auth', 'permission:bookings.manage']);
     $r->get('/admin/bookings/{id}',      'Admin\BookingController@show',   ['auth', 'permission:bookings.view']);
     $r->post('/admin/bookings/{id}',     'Admin\BookingController@update', ['auth', 'permission:bookings.manage']);
     $r->post('/admin/bookings/{id}/delete', 'Admin\BookingController@destroy', ['auth', 'permission:bookings.manage']); // super admin only (enforced in controller)
