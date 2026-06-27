@@ -46,6 +46,20 @@
         "barkada-room-b": [
             "rooms\/barkada-room-b\/1",
             "rooms\/barkada-room-b\/2"
+        ],
+        "super-family-room": [
+            "rooms\/family-room\/1",
+            "rooms\/family-room\/2",
+            "rooms\/family-room\/3",
+            "rooms\/family-room\/4"
+        ],
+        "full-house": [
+            "rooms\/full-house\/1",
+            "rooms\/full-house\/2",
+            "rooms\/full-house\/3",
+            "rooms\/full-house\/4",
+            "rooms\/full-house\/5",
+            "rooms\/full-house\/6"
         ]
     },
     "amenities": [

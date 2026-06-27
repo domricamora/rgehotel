@@ -138,6 +138,10 @@ $roomTypes = [
         'Generous family space for up to four guests.',
         "Our Family Room comfortably hosts up to four guests with a thoughtful layout, extra storage and a private bathroom. Bring the kids, unpack, and let Leyte's beaches become your playground.",
         4,2,2,'1 Queen + 2 Singles',32,3200,3600,3,'Sea View',1, array_merge($baseAmen,['fridge','balcony','sea-view'])],
+    ['super-family-room','Super Family Room',
+        'Our largest family space — sleeps up to five with room to spare.',
+        "The Super Family Room is our most generous family stay, comfortably hosting up to five guests with a roomy layout, extra beds and a private bathroom. Perfect for bigger families and groups who want to stay together, with Leyte's white-sand beaches just steps from the door.",
+        5,4,1,'2 Queen + 1 Single',40,2000,2200,3,'Sea View',0, array_merge($baseAmen,['fridge','balcony','sea-view'])],
     ['suite','Suite',
         'Our most refined room — extra space, sea breeze and a private balcony.',
         "The Suite is RGE Hotel's signature stay: a generous, light-filled room with premium bedding, a private balcony catching the sea breeze, and elevated finishes throughout. The ideal choice for honeymooners and travellers who want a little more.",
@@ -150,6 +154,10 @@ $roomTypes = [
         'Group room for friends — sleeps up to six.',
         "A comfortable group room for up to six friends, Barkada Room B keeps everyone under one roof at a great value. Spacious, breezy and an easy walk to the shore.",
         6,6,0,'Multiple Beds',38,3500,4000,2,'Garden View',0, array_merge($baseAmen,['fridge','beach-access'])],
+    ['full-house','Full House',
+        'Rent the entire house — exclusive use for your whole group or family.',
+        "Book the Full House and enjoy exclusive use of the entire property — multiple bedrooms, a private bathroom set-up and shared living space, all to yourselves. Ideal for big families, barkadas and special occasions who want privacy, comfort and the whole place to themselves, just steps from Leyte's white-sand shore and the gateway to Kalanggaman Island.",
+        16,16,0,'Multiple Bedrooms',150,9000,10000,1,'Sea View',0, array_merge($baseAmen,['fridge','balcony','sea-view','breakfast','parking','beach-access','room-service','desk'])],
 ];
 $roomTypeId = [];
 $sort = 0;
