@@ -12,6 +12,9 @@ storage/uploads/
 storage/logs/
 coming-soon/subscribers.csv
 
+# Admin-uploaded images (generated at runtime on the live server; not committed)
+assets/img/uploads/
+
 # Dependencies / build
 node_modules/
 vendor/composer/

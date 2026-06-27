@@ -3,6 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Core\Auth;
+use App\Core\ImageService;
 
 /**
  * Generic CRUD for services, packages and offers.
@@ -48,8 +49,31 @@ class ContentController extends Controller
         $cfg = $this->gate($entity);
         $this->requirePost();
         $data = $this->collect($entity);
+
+        // Existing image (for replace/remove handling).
+        $current = $id === 'new' ? null : $this->db->first("SELECT image FROM {$cfg['table']} WHERE id=?", [$id]);
+        $oldImage = $current['image'] ?? null;
+
+        // New image upload?
+        if (($_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            $base = ImageService::ingestUpload($_FILES['image'], ImageService::uniqueBase($entity));
+            if ($base) {
+                $data['image'] = $base;
+                ImageService::deleteBase($oldImage); // only removes prior uploads/ files
+            } else {
+                flash('error', 'Image upload failed — unsupported or invalid file.');
+            }
+        } elseif ($this->input('remove_image')) {
+            $data['image'] = null;
+            ImageService::deleteBase($oldImage);
+        }
+
         if ($id === 'new') {
-            $data['slug'] = $data['slug'] ?: slugify($data['name'] ?? $data['title'] ?? 'item');
+            $data['slug'] = slugify($data['name'] ?? $data['title'] ?? 'item');
+            // Ensure slug uniqueness within the table.
+            $slug = $data['slug']; $n = 2;
+            while ($this->db->scalar("SELECT COUNT(*) FROM {$cfg['table']} WHERE slug=?", [$slug]) > 0) $slug = $data['slug'].'-'.$n++;
+            $data['slug'] = $slug;
             $newId = $this->db->insert($cfg['table'], $data);
             flash('success', $cfg['label'] . ' created.');
             redirect("/admin/$entity/$newId");
@@ -58,6 +82,30 @@ class ContentController extends Controller
             flash('success', $cfg['label'] . ' updated.');
             redirect("/admin/$entity/$id");
         }
+        return '';
+    }
+
+    public function destroy(string $entity, string $id): string
+    {
+        $cfg = $this->gate($entity);
+        $this->requirePost();
+        $row = $this->db->first("SELECT * FROM {$cfg['table']} WHERE id=?", [$id]);
+        if (!$row) return $this->abort(404);
+
+        // Packages may be referenced by bookings (no cascade) — refuse if so.
+        if ($entity === 'packages') {
+            $n = (int)$this->db->scalar('SELECT COUNT(*) FROM bookings WHERE package_id=?', [$id]);
+            if ($n > 0) {
+                flash('error', "Cannot delete this package — it is used by $n booking(s). Unpublish it instead.");
+                redirect("/admin/$entity/$id");
+                return '';
+            }
+        }
+
+        ImageService::deleteBase($row['image'] ?? null);
+        $this->db->delete($cfg['table'], ['id' => $id]); // link tables cascade
+        flash('success', $cfg['label'] . ' deleted.');
+        redirect("/admin/$entity");
         return '';
     }
 

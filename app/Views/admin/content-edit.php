@@ -2,7 +2,7 @@
 $v = fn($k, $d = '') => e($row[$k] ?? $d);
 $chk = fn($k, $def=0) => (($row[$k] ?? $def)) ? 'checked' : '';
 ?>
-<form method="post" action="<?= e(url('/admin/'.$entity.'/'.$id)) ?>">
+<form method="post" action="<?= e(url('/admin/'.$entity.'/'.$id)) ?>" enctype="multipart/form-data">
   <?= csrf_field() ?>
   <div class="panel"><div class="panel__head"><h2><?= $id==='new'?'New':'Edit' ?> <?= e($label) ?></h2></div><div class="panel__body">
     <div class="form-grid">
@@ -45,6 +45,17 @@ $chk = fn($k, $def=0) => (($row[$k] ?? $def)) ? 'checked' : '';
       <div class="field"><label>&nbsp;</label>
         <div class="checkbox"><input type="checkbox" name="is_published" value="1" <?= $chk('is_published',1) ?>> <span>Published</span></div>
         <div class="checkbox"><input type="checkbox" name="is_featured" value="1" <?= $chk('is_featured') ?>> <span>Featured</span></div>
+      </div>
+
+      <div class="field full"><label>Photo</label>
+        <?php if (!empty($row['image'])): ?>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px">
+            <img src="<?= e(img_url($row['image'],'thumb')) ?>" alt="" style="width:150px;height:110px;object-fit:cover;border:1px solid var(--line)">
+            <label class="checkbox" style="margin:0"><input type="checkbox" name="remove_image" value="1"> <span>Remove current photo</span></label>
+          </div>
+        <?php endif; ?>
+        <input type="file" name="image" accept="image/*">
+        <p class="muted" style="font-size:.82rem;margin-top:4px">JPG / PNG / WebP. Uploading a new photo replaces the current one.</p>
       </div>
     </div>
   </div></div>

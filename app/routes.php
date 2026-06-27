@@ -66,14 +66,19 @@ return function (Router $r) {
     $r->get('/admin/rooms',              'Admin\RoomController@index',     ['auth', 'permission:rooms.view']);
     $r->get('/admin/rooms/{id}',         'Admin\RoomController@edit',      ['auth', 'permission:rooms.manage']);
     $r->post('/admin/rooms/{id}',        'Admin\RoomController@update',    ['auth', 'permission:rooms.manage']);
+    $r->post('/admin/rooms/{id}/delete', 'Admin\RoomController@destroy',   ['auth', 'permission:rooms.manage']);
+    $r->post('/admin/rooms/{id}/photos', 'Admin\RoomController@uploadPhoto', ['auth', 'permission:rooms.manage']);
+    $r->post('/admin/rooms/{id}/photos/{pid}/delete', 'Admin\RoomController@deletePhoto', ['auth', 'permission:rooms.manage']);
+    $r->post('/admin/rooms/{id}/photos/{pid}/cover',  'Admin\RoomController@setCover',    ['auth', 'permission:rooms.manage']);
 
     $r->get('/admin/housekeeping',       'Admin\HousekeepingController@index', ['auth', 'permission:housekeeping.view']);
     $r->post('/admin/housekeeping/{id}', 'Admin\HousekeepingController@update', ['auth', 'permission:housekeeping.manage']);
 
-    // Generic content CRUD (services, packages, offers)
+    // Generic content CRUD (services, packages, offers) — incl. photo upload + delete
     $r->get('/admin/{entity:services|packages|offers}',          'Admin\ContentController@index',  ['auth']);
     $r->get('/admin/{entity:services|packages|offers}/{id}',     'Admin\ContentController@edit',   ['auth']);
     $r->post('/admin/{entity:services|packages|offers}/{id}',    'Admin\ContentController@save',   ['auth']);
+    $r->post('/admin/{entity:services|packages|offers}/{id}/delete', 'Admin\ContentController@destroy', ['auth']);
 
     $r->get('/admin/reviews',            'Admin\ReviewController@index',   ['auth', 'permission:reviews.moderate']);
     $r->post('/admin/reviews/{id}',      'Admin\ReviewController@update',  ['auth', 'permission:reviews.moderate']);

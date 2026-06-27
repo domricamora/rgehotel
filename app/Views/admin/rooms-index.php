@@ -1,6 +1,6 @@
 <?php /** @var array $rooms */ ?>
 <div class="panel">
-  <div class="panel__head"><h2>Room Types</h2></div>
+  <div class="panel__head"><h2>Room Types</h2><a class="btn btn-primary btn-sm" href="<?= e(url('/admin/rooms/new')) ?>"><?= icon('check') ?> New Room Type</a></div>
   <div class="table-wrap">
     <table>
       <thead><tr><th></th><th>Name</th><th>Price/night</th><th>Sleeps</th><th>Units</th><th>Status</th><th></th></tr></thead>
@@ -13,7 +13,12 @@
           <td><?= (int)$r['max_occupancy'] ?></td>
           <td><?= (int)$r['units'] ?></td>
           <td><?= $r['is_published'] ? badge('available') : '<span class="badge badge-gray">Hidden</span>' ?> <?= $r['is_featured'] ? '<span class="badge badge-blue">Featured</span>' : '' ?></td>
-          <td><a class="btn btn-outline btn-sm" href="<?= e(url('/admin/rooms/'.$r['id'])) ?>">Edit</a></td>
+          <td style="white-space:nowrap">
+            <a class="btn btn-outline btn-sm" href="<?= e(url('/admin/rooms/'.$r['id'])) ?>">Edit</a>
+            <form method="post" action="<?= e(url('/admin/rooms/'.$r['id'].'/delete')) ?>" style="display:inline" onsubmit="return confirm('Delete &quot;<?= e($r['name']) ?>&quot;? This cannot be undone.')">
+              <?= csrf_field() ?><button class="btn btn-outline btn-sm" style="color:var(--red,#c0392b)"><?= icon('x','',14) ?> Delete</button>
+            </form>
+          </td>
         </tr>
         <?php endforeach; ?>
       </tbody>

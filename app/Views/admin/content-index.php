@@ -15,7 +15,12 @@
             <td><?= $r['discount_type']==='percent' ? (int)$r['discount_value'].'%' : money($r['discount_value']) ?> <span class="muted">(<?= e($r['code']) ?>)</span></td>
           <?php endif; ?>
           <td><?= $r['is_published'] ? badge('confirmed') : '<span class="badge badge-gray">Hidden</span>' ?> <?= !empty($r['is_featured']) ? '<span class="badge badge-blue">Featured</span>' : '' ?></td>
-          <td><a class="btn btn-outline btn-sm" href="<?= e(url('/admin/'.$entity.'/'.$r['id'])) ?>">Edit</a></td>
+          <td style="white-space:nowrap">
+            <a class="btn btn-outline btn-sm" href="<?= e(url('/admin/'.$entity.'/'.$r['id'])) ?>">Edit</a>
+            <form method="post" action="<?= e(url('/admin/'.$entity.'/'.$r['id'].'/delete')) ?>" style="display:inline" onsubmit="return confirm('Delete &quot;<?= e($r['name'] ?? $r['title']) ?>&quot;? This cannot be undone.')">
+              <?= csrf_field() ?><button class="btn btn-outline btn-sm" style="color:var(--red,#c0392b)"><?= icon('x','',14) ?> Delete</button>
+            </form>
+          </td>
         </tr>
         <?php endforeach; ?>
       </tbody>
