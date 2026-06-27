@@ -70,6 +70,9 @@ class Mailer
 
             $mail->CharSet = PHPMailer::CHARSET_UTF8;
             $mail->setFrom($fromEmail, $fromName);
+            // Envelope sender for the mail() -f flag — sends as info@rgehotel.com
+            // rather than the web-server user, which helps deliverability/SPF.
+            $mail->Sender = $fromEmail;
             foreach (self::normalizeRecipients($to) as [$addr, $name]) {
                 $mail->addAddress($addr, $name);
             }
