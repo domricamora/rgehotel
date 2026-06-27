@@ -104,10 +104,9 @@ foreach ($users as [$role, $name, $email, $pos, $dept]) {
 $amenities = [
     ['wifi','Free Wi-Fi','wifi'], ['air-con','Air Conditioning','wind'], ['private-bath','Private Bathroom','bath'],
     ['hot-shower','Hot & Cold Shower','shower-head'], ['tv','Flat-screen TV','tv'], ['fridge','Mini Refrigerator','refrigerator'],
-    ['balcony','Private Balcony','door-open'], ['sea-view','Sea View','waves'], ['breakfast','Daily Breakfast','croissant'],
+    ['balcony','Private Balcony','door-open'],
     ['parking','Free Parking','car'], ['beach-access','Beach Access','umbrella'], ['room-service','Room Service','concierge-bell'],
     ['housekeeping','Daily Housekeeping','sparkles'], ['linens','Fresh Towels & Linens','bed'], ['desk','Work Desk','lamp-desk'],
-    ['coffee','Coffee & Tea','coffee'],
 ];
 $amenityId = [];
 foreach ($amenities as $a) {
