@@ -20,6 +20,13 @@ $s = fn($k, $d = '') => e($settings[$k] ?? $d);
     <div class="field"><label>Instagram URL</label><input name="instagram_url" value="<?= $s('instagram_url') ?>"></div>
   </div></div></div>
 
+  <div class="panel"><div class="panel__head"><h2>Payments</h2></div><div class="panel__body"><div class="form-grid">
+    <div class="field"><label>Online payment fee (%)</label>
+      <input type="number" step="0.01" min="0" name="online_fee_percent" value="<?= $s('online_fee_percent','0') ?>">
+      <small class="muted">Surcharge added on top of the total for online card/e-wallet payments (Xendit). Set <code>0</code> to disable. Cash / pay-at-hotel are never charged this fee.</small>
+    </div>
+  </div></div></div>
+
   <div class="panel"><div class="panel__head"><h2>Features</h2></div><div class="panel__body">
     <label class="checkbox"><input type="checkbox" name="restaurant_published" value="1" <?= ($settings['restaurant_published']??'0')==='1'?'checked':'' ?>> <span>Publish restaurant page on live site</span></label>
   </div></div>

@@ -156,6 +156,22 @@ if (!function_exists('vat_breakdown')) {
     }
 }
 
+if (!function_exists('online_fee_percent')) {
+    /** Configurable surcharge percentage applied to online (card/e-wallet) payments. */
+    function online_fee_percent(): float
+    {
+        return max(0, (float) \App\Models\Setting::get('online_fee_percent', 0));
+    }
+}
+
+if (!function_exists('online_fee_amount')) {
+    /** The surcharge amount for a given base amount, rounded to 2dp. */
+    function online_fee_amount(float $base): float
+    {
+        return round($base * online_fee_percent() / 100, 2);
+    }
+}
+
 if (!function_exists('slugify')) {
     function slugify(string $text): string
     {

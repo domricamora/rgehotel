@@ -46,6 +46,12 @@
           <?php if ($booking['discount'] > 0): ?><div class="flex mt-2" style="justify-content:space-between;color:var(--coral-deep)"><span>Discount</span><span>−<?= money($booking['discount']) ?></span></div><?php endif; ?>
           <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
           <div class="flex" style="justify-content:space-between;align-items:baseline"><strong>Total due</strong><span class="price"><?= money($booking['total']) ?></span></div>
+          <?php $ofee = online_fee_amount((float)$booking['total']); if ($ofee > 0): ?>
+          <hr style="border:0;border-top:1px dashed var(--line);margin:14px 0">
+          <div class="flex" style="justify-content:space-between;font-size:.9rem"><span class="muted">Online payment fee (<?= e(online_fee_percent()) ?>%)</span><span>+<?= money($ofee) ?></span></div>
+          <div class="flex mt-2" style="justify-content:space-between;align-items:baseline"><strong>Total if paying online</strong><span class="price"><?= money($booking['total'] + $ofee) ?></span></div>
+          <p class="muted" style="font-size:.8rem;margin-top:8px">"Reserve &amp; pay at hotel" has no online fee.</p>
+          <?php endif; ?>
         </div>
       </aside>
     </div>

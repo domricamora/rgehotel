@@ -21,10 +21,19 @@ class PaymentController extends Controller
 
         try {
             if ($method === 'xendit') {
+                $base   = (float) $booking['total'];
+                $fee    = online_fee_amount($base);
+                $charge = round($base + $fee, 2);
+                $desc   = 'RGE Hotel booking ' . $booking['reference']
+                        . ($fee > 0 ? ' (incl. ' . online_fee_percent() . '% online fee)' : '');
                 $xendit = new Xendit();
                 if ($xendit->isConfigured()) {
-                    $invoice = $xendit->createInvoice($booking);
-                    $this->recordPayment($booking, 'xendit', 'pending', $invoice['id'] ?? null, $invoice['invoice_url'] ?? null, $invoice);
+                    $invoice = $xendit->createCustomInvoice(
+                        $booking, $charge, $booking['reference'], $desc,
+                        site_url('/booking/' . $booking['reference'] . '/confirmation'),
+                        site_url('/booking/' . $booking['reference'] . '/pay')
+                    );
+                    $this->recordPayment($booking, 'xendit', 'pending', $invoice['id'] ?? null, $invoice['invoice_url'] ?? null, $invoice, $charge);
                     redirect($invoice['invoice_url']);
                     return '';
                 }
@@ -54,19 +63,20 @@ class PaymentController extends Controller
     /** Dev sandbox simulation when live/test keys are not yet configured. */
     private function simulate(array $booking, string $provider): string
     {
+        $charge = round((float) $booking['total'] + online_fee_amount((float) $booking['total']), 2);
         $this->recordPayment($booking, $provider, 'paid', 'SIM-' . $booking['reference'], null,
-            ['simulated' => true, 'note' => 'Sandbox simulation — no real charge']);
+            ['simulated' => true, 'note' => 'Sandbox simulation — no real charge'], $charge);
         Folio::reconcile((int)$booking['id']);
         flash('info', 'Sandbox demo: payment via ' . ucfirst($provider) . ' was simulated (no real charge). Add API keys in config to enable live processing.');
         redirect('/booking/' . $booking['reference'] . '/confirmation');
         return '';
     }
 
-    private function recordPayment(array $booking, string $provider, string $status, ?string $externalId, ?string $ref, $payload): void
+    private function recordPayment(array $booking, string $provider, string $status, ?string $externalId, ?string $ref, $payload, ?float $amount = null): void
     {
         $this->db->insert('payments', [
             'booking_id' => $booking['id'], 'provider' => $provider, 'method' => $provider,
-            'amount' => $booking['total'], 'currency' => $booking['currency'], 'status' => $status,
+            'amount' => $amount ?? $booking['total'], 'currency' => $booking['currency'], 'status' => $status,
             'external_id' => $externalId, 'external_ref' => $ref,
             'payload' => is_string($payload) ? $payload : json_encode($payload),
         ]);

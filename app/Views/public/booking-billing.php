@@ -62,9 +62,13 @@ use App\Models\Folio;
             <?php if (!$xenditReady): ?>
               <div class="alert alert-info mt-3" style="font-size:.85rem"><?= icon('check','',14) ?> <strong>Sandbox mode:</strong> live keys aren't configured, so payment is simulated (no real charge).</div>
             <?php endif; ?>
+            <?php $ofee = online_fee_amount((float)$summary['balance']); if ($ofee > 0): ?>
+              <div class="flex mt-2" style="justify-content:space-between;font-size:.85rem"><span class="muted">Online payment fee (<?= e(online_fee_percent()) ?>%)</span><span>+<?= money($ofee) ?></span></div>
+              <div class="flex mt-2" style="justify-content:space-between;align-items:baseline"><strong>Total online</strong><span class="price"><?= money($summary['balance'] + $ofee) ?></span></div>
+            <?php endif; ?>
             <form method="post" action="<?= e(url('/booking/'.$booking['reference'].'/billing/pay')) ?>" class="mt-3">
               <?= csrf_field() ?>
-              <button class="btn btn-teal" type="submit" style="width:100%">Pay <?= money($summary['balance']) ?> with Xendit <?= icon('chevron-right','',16) ?></button>
+              <button class="btn btn-teal" type="submit" style="width:100%">Pay <?= money($summary['balance'] + $ofee) ?> with Xendit <?= icon('chevron-right','',16) ?></button>
             </form>
             <p class="muted mt-2" style="font-size:.82rem;text-align:center">Cards, GCash, GrabPay, bank transfer &amp; more. You can also settle at the front desk.</p>
           <?php else: ?>

@@ -49,24 +49,27 @@ class BillingController extends Controller
         }
 
         $externalId = $ref . '-FOLIO-' . strtoupper(bin2hex(random_bytes(3)));
+        $fee    = online_fee_amount($balance);
+        $charge = round($balance + $fee, 2);
+        $desc   = 'RGE Hotel folio balance — ' . $ref . ($fee > 0 ? ' (incl. ' . online_fee_percent() . '% online fee)' : '');
 
         try {
             $xendit = new Xendit();
             if ($xendit->isConfigured()) {
                 $invoice = $xendit->createCustomInvoice(
                     $booking,
-                    $balance,
+                    $charge,
                     $externalId,
-                    'RGE Hotel folio balance — ' . $ref,
+                    $desc,
                     site_url('/booking/' . $ref . '/billing'),
                     site_url('/booking/' . $ref . '/billing')
                 );
-                $this->recordPayment($booking, $balance, 'pending', $externalId, $invoice['invoice_url'] ?? null, $invoice);
+                $this->recordPayment($booking, $charge, 'pending', $externalId, $invoice['invoice_url'] ?? null, $invoice);
                 redirect($invoice['invoice_url']);
                 return '';
             }
             // Sandbox: no live keys configured — simulate a successful charge.
-            $this->recordPayment($booking, $balance, 'paid', $externalId, null,
+            $this->recordPayment($booking, $charge, 'paid', $externalId, null,
                 ['simulated' => true, 'note' => 'Sandbox simulation — no real charge']);
             Folio::reconcile((int) $booking['id']);
             flash('info', 'Sandbox demo: your folio balance of ' . money($balance) . ' was settled (no real charge).');

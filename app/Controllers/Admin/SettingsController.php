@@ -22,6 +22,7 @@ class SettingsController extends Controller
             Setting::set($k, (string)$this->input($k, ''));
         }
         Setting::set('restaurant_published', $this->input('restaurant_published') ? '1' : '0');
+        Setting::set('online_fee_percent', (string) max(0, (float) $this->input('online_fee_percent', '0')));
         flash('success', 'Settings saved.');
         redirect('/admin/settings');
         return '';
