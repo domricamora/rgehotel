@@ -138,6 +138,9 @@ $canManage = Auth::can('bookings.manage');
       </div>
     </div>
     <a class="btn btn-outline" href="<?= e(url('/admin/accounting/invoice/'.$b['id'])) ?>" target="_blank"><?= icon('arrow-right') ?> View / print invoice</a>
+    <form method="post" action="<?= e(url('/admin/accounting/invoice/'.$b['id'].'/email')) ?>" style="display:inline" onsubmit="return confirm('Email this invoice to <?= e($b['guest_email']) ?>?')">
+      <?= csrf_field() ?><button class="btn btn-outline" type="submit"><?= icon('mail') ?> Email invoice to guest</button>
+    </form>
     <a class="btn btn-outline" href="<?= e(url('/admin/bookings')) ?>">← Back to bookings</a>
 
     <?php if (Auth::isAdmin()): ?>

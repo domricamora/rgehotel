@@ -6,6 +6,16 @@ $grandTotal = $folio['grand_total'];
 $paid = $folio['paid'];
 $balance = $folio['balance'];
 ?>
+<style>@media print{.no-print{display:none!important}}</style>
+<form method="post" action="<?= e(url('/admin/accounting/invoice/'.$b['id'].'/email')) ?>" class="no-print"
+      style="display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:20px;padding-bottom:16px;border-bottom:1px dashed #e7e0d2">
+  <?= csrf_field() ?>
+  <span style="font-size:.82rem;color:#948a7a">Email this invoice to:</span>
+  <input type="email" name="email" value="<?= e($b['guest_email']) ?>" required
+         style="padding:7px 10px;border:1px solid #d9d2c4;border-radius:0;font-size:.85rem;min-width:230px">
+  <button type="submit" style="padding:8px 16px;border:1px solid #6a7548;background:#6a7548;color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;border-radius:0">Send invoice</button>
+</form>
+
 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
   <div>
     <img src="<?= e(img_url('general/logo','full')) ?>" alt="RGE Hotel" style="height:60px;margin-bottom:8px">

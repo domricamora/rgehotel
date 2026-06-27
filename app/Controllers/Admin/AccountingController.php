@@ -3,6 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Core\Auth;
+use App\Core\Mailer;
 use App\Models\Accounting;
 use App\Models\Booking;
 use App\Models\Folio;
@@ -216,5 +217,38 @@ class AccountingController extends Controller
             'charges' => $charges, 'folio' => $folio,
             'vat' => vat_breakdown($folio['grand_total']),
         ], 'print');
+    }
+
+    /** Email the invoice to the guest (or an address entered by staff). */
+    public function emailInvoice(string $id): string
+    {
+        $this->requirePost();
+        $b = $this->db->first('SELECT b.*, rt.name AS room_name FROM bookings b JOIN room_types rt ON rt.id=b.room_type_id WHERE b.id=?', [$id]);
+        if (!$b) return $this->abort(404, 'Booking not found');
+
+        $to = filter_var($this->input('email', $b['guest_email']), FILTER_VALIDATE_EMAIL);
+        if (!$to) {
+            flash('error', 'A valid email address is required to send the invoice.');
+            redirect('/admin/accounting/invoice/' . $id);
+            return '';
+        }
+
+        $folio = Folio::summary($b);
+        $body = partial('admin.accounting.invoice', [
+            'b' => $b,
+            'payments' => $this->db->all('SELECT * FROM payments WHERE booking_id=? ORDER BY id', [$id]),
+            'charges' => Folio::charges((int) $b['id']),
+            'folio' => $folio,
+            'vat' => vat_breakdown($folio['grand_total']),
+        ]);
+
+        $subject = 'Your RGE Hotel invoice — ' . $b['reference'];
+        $ok = Mailer::send([$to => $b['guest_name']], $subject, $body, config('mail.from_email'));
+
+        flash($ok ? 'success' : 'error', $ok
+            ? 'Invoice emailed to ' . $to . (config('mail.log_only') ? ' (logged — mail is in log-only mode).' : '.')
+            : 'Could not send the invoice email. Check mail settings / logs.');
+        redirect('/admin/accounting/invoice/' . $id);
+        return '';
     }
 }

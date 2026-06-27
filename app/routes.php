@@ -105,6 +105,7 @@ return function (Router $r) {
     $r->get('/admin/accounting/reports',         'Admin\AccountingController@reports',  ['auth', 'permission:accounting.view']);
     $r->get('/admin/accounting/export/{type}',   'Admin\AccountingController@export',   ['auth', 'permission:accounting.view']);
     $r->get('/admin/accounting/invoice/{id}',    'Admin\AccountingController@invoice',  ['auth', 'permission:accounting.view']);
+    $r->post('/admin/accounting/invoice/{id}/email', 'Admin\AccountingController@emailInvoice', ['auth', 'permission:accounting.view']);
 
     $r->get('/admin/users',              'Admin\UserController@index',  ['auth', 'permission:users.manage']);
     $r->get('/admin/users/{id}',         'Admin\UserController@edit',   ['auth', 'permission:users.manage']);

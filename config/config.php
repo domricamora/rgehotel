@@ -67,8 +67,18 @@ $config = [
         'from_name'  => 'RGE Hotel',
         'from_email' => 'info@rgehotel.com',
         // Local dev: PHP mail() is typically unconfigured; messages are logged instead.
+        // On production set log_only=false in config.local.php and fill in smtp.* below.
         'log_only'   => true,
         'log_path'   => dirname(__DIR__) . '/storage/logs/mail.log',
+        // SMTP (PHPMailer). Leave host empty to fall back to PHP mail().
+        // Put real credentials in config.local.php, never here.
+        'smtp' => [
+            'host'       => '',          // e.g. mail.rgehotel.com
+            'port'       => 587,
+            'username'   => '',          // e.g. info@rgehotel.com
+            'password'   => '',
+            'encryption' => 'tls',       // tls | ssl | none
+        ],
     ],
 
     'security' => [
