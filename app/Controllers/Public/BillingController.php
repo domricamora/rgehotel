@@ -5,12 +5,12 @@ use App\Core\Controller;
 use App\Models\Booking;
 use App\Models\RoomType;
 use App\Models\Folio;
-use App\Services\Xendit;
+use App\Services\PayMongo;
 
 /**
  * Guest-facing folio: shows the room booking, any in-house charges
  * (room service, amenities, other charges) and lets the guest settle
- * the outstanding balance online via Xendit.
+ * the outstanding balance online via PayMongo.
  */
 class BillingController extends Controller
 {
@@ -20,16 +20,15 @@ class BillingController extends Controller
         $booking = Booking::findByReference($ref);
         if (!$booking) return $this->abort(404, 'Booking not found');
         $room = RoomType::find((int) $booking['room_type_id']);
-        $xendit = config('payments.xendit');
         return $this->view('public.booking-billing', [
-            'active'      => '',
-            'booking'     => $booking,
-            'room'        => $room,
-            'charges'     => Folio::charges((int) $booking['id']),
-            'summary'     => Folio::summary($booking),
-            'xenditReady' => ($xendit['enabled'] ?? false) && !str_contains($xendit['secret_key'] ?? '', 'REPLACE'),
-            'title'       => 'Your bill — ' . $ref,
-            'noindex'     => true,
+            'active'       => '',
+            'booking'      => $booking,
+            'room'         => $room,
+            'charges'      => Folio::charges((int) $booking['id']),
+            'summary'      => Folio::summary($booking),
+            'gatewayReady' => (new PayMongo())->isConfigured(),
+            'title'        => 'Your bill — ' . $ref,
+            'noindex'      => true,
         ]);
     }
 
@@ -48,28 +47,28 @@ class BillingController extends Controller
             return '';
         }
 
-        $externalId = $ref . '-FOLIO-' . strtoupper(bin2hex(random_bytes(3)));
+        $reference = $ref . '-FOLIO-' . strtoupper(bin2hex(random_bytes(3)));
         $fee    = online_fee_amount($balance);
         $charge = round($balance + $fee, 2);
         $desc   = 'RGE Hotel folio balance — ' . $ref . ($fee > 0 ? ' (incl. ' . online_fee_percent() . '% online fee)' : '');
 
         try {
-            $xendit = new Xendit();
-            if ($xendit->isConfigured()) {
-                $invoice = $xendit->createCustomInvoice(
+            $gateway = new PayMongo();
+            if ($gateway->isConfigured()) {
+                $session = $gateway->createCheckoutSession(
                     $booking,
                     $charge,
-                    $externalId,
+                    $reference,
                     $desc,
                     site_url('/booking/' . $ref . '/billing'),
                     site_url('/booking/' . $ref . '/billing')
                 );
-                $this->recordPayment($booking, $charge, 'pending', $externalId, $invoice['invoice_url'] ?? null, $invoice);
-                redirect($invoice['invoice_url']);
+                $this->recordPayment($booking, $charge, 'pending', $session['id'] ?? null, $reference, $session);
+                redirect($session['attributes']['checkout_url']);
                 return '';
             }
             // Sandbox: no live keys configured — simulate a successful charge.
-            $this->recordPayment($booking, $charge, 'paid', $externalId, null,
+            $this->recordPayment($booking, $charge, 'paid', 'SIM-' . $reference, $reference,
                 ['simulated' => true, 'note' => 'Sandbox simulation — no real charge']);
             Folio::reconcile((int) $booking['id']);
             flash('info', 'Sandbox demo: your folio balance of ' . money($balance) . ' was settled (no real charge).');
@@ -83,17 +82,18 @@ class BillingController extends Controller
         }
     }
 
-    private function recordPayment(array $booking, float $amount, string $status, ?string $externalId, ?string $ref, $payload): void
+    /** external_id = PayMongo session id; external_ref = the reference we sent (webhook fallback). */
+    private function recordPayment(array $booking, float $amount, string $status, ?string $externalId, ?string $externalRef, $payload): void
     {
         $this->db->insert('payments', [
             'booking_id'   => $booking['id'],
-            'provider'     => 'xendit',
-            'method'       => 'xendit',
+            'provider'     => 'paymongo',
+            'method'       => 'paymongo',
             'amount'       => round($amount, 2),
             'currency'     => $booking['currency'] ?: 'PHP',
             'status'       => $status,
             'external_id'  => $externalId,
-            'external_ref' => $ref,
+            'external_ref' => $externalRef,
             'payload'      => is_string($payload) ? $payload : json_encode($payload),
         ]);
     }

@@ -4,7 +4,7 @@ namespace App\Controllers\Public;
 use App\Core\Controller;
 use App\Models\Booking;
 use App\Models\Folio;
-use App\Services\Xendit;
+use App\Services\PayMongo;
 use App\Services\PayPal;
 
 class PaymentController extends Controller
@@ -20,24 +20,25 @@ class PaymentController extends Controller
         $method = $this->input('method');
 
         try {
-            if ($method === 'xendit') {
+            if ($method === 'paymongo') {
                 $base   = (float) $booking['total'];
                 $fee    = online_fee_amount($base);
                 $charge = round($base + $fee, 2);
                 $desc   = 'RGE Hotel booking ' . $booking['reference']
                         . ($fee > 0 ? ' (incl. ' . online_fee_percent() . '% online fee)' : '');
-                $xendit = new Xendit();
-                if ($xendit->isConfigured()) {
-                    $invoice = $xendit->createCustomInvoice(
+                $gateway = new PayMongo();
+                if ($gateway->isConfigured()) {
+                    $session = $gateway->createCheckoutSession(
                         $booking, $charge, $booking['reference'], $desc,
                         site_url('/booking/' . $booking['reference'] . '/confirmation'),
                         site_url('/booking/' . $booking['reference'] . '/pay')
                     );
-                    $this->recordPayment($booking, 'xendit', 'pending', $invoice['id'] ?? null, $invoice['invoice_url'] ?? null, $invoice, $charge);
-                    redirect($invoice['invoice_url']);
+                    $this->recordPayment($booking, 'paymongo', 'pending', $session['id'] ?? null,
+                        $booking['reference'], $session, $charge);
+                    redirect($session['attributes']['checkout_url']);
                     return '';
                 }
-                return $this->simulate($booking, 'xendit');
+                return $this->simulate($booking, 'paymongo');
             }
 
             // Pay-at-hotel / reserve without online payment.
@@ -72,38 +73,101 @@ class PaymentController extends Controller
         return '';
     }
 
-    private function recordPayment(array $booking, string $provider, string $status, ?string $externalId, ?string $ref, $payload, ?float $amount = null): void
+    /**
+     * Column convention for gateway payments:
+     *   external_id  — the gateway's own id (PayMongo checkout session, 'cs_...')
+     *   external_ref — the reference_number we sent, so the webhook can resolve the
+     *                  row even when the event doesn't carry the session id
+     */
+    private function recordPayment(array $booking, string $provider, string $status, ?string $externalId, ?string $externalRef, $payload, ?float $amount = null): void
     {
         $this->db->insert('payments', [
             'booking_id' => $booking['id'], 'provider' => $provider, 'method' => $provider,
             'amount' => $amount ?? $booking['total'], 'currency' => $booking['currency'], 'status' => $status,
-            'external_id' => $externalId, 'external_ref' => $ref,
+            'external_id' => $externalId, 'external_ref' => $externalRef,
             'payload' => is_string($payload) ? $payload : json_encode($payload),
         ]);
     }
 
-    /** Xendit server-to-server webhook (invoice paid). */
-    public function xenditWebhook(): string
+    /**
+     * PayMongo server-to-server webhook. Settles on checkout_session.payment.paid
+     * and marks failures on payment.failed. Idempotent — a redelivered event is a
+     * no-op once the row is already paid.
+     */
+    public function paymongoWebhook(): string
     {
         $raw = file_get_contents('php://input');
-        $token = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
-        $expected = config('payments.xendit.webhook_token');
-        if (!$expected || !hash_equals((string)$expected, (string)$token)) {
-            http_response_code(401);
-            return $this->json(['ok' => false, 'error' => 'invalid token']);
+
+        $gateway = new PayMongo();
+        if (!$gateway->isConfigured()) {
+            return $this->json(['ok' => true, 'skipped' => 'paymongo not configured']);
         }
-        $data = json_decode($raw, true) ?: [];
-        $extId = $data['id'] ?? ($data['external_id'] ?? null);
-        $status = strtolower($data['status'] ?? '');
-        if ($extId && in_array($status, ['paid', 'settled'])) {
-            $payment = $this->db->first('SELECT * FROM payments WHERE external_id = ?', [$extId]);
-            if ($payment) {
-                $this->db->update('payments', ['status' => 'paid', 'updated_at' => date('c')], ['id' => $payment['id']]);
-                Folio::reconcile((int)$payment['booking_id']);
-                logger('Xendit webhook: booking ' . $payment['booking_id'] . ' payment settled', 'payments');
+        if (!$gateway->verifySignature($raw, $_SERVER['HTTP_PAYMONGO_SIGNATURE'] ?? '')) {
+            logger('PayMongo webhook: signature verification FAILED', 'payments');
+            // Non-2xx matters: PayMongo retries on it and flags it in the dashboard, which
+            // is how a wrong webhook secret gets noticed instead of silently dropping events.
+            // (json() sets the status itself, so passing it here is the only way it sticks.)
+            return $this->json(['ok' => false, 'error' => 'invalid signature'], 401);
+        }
+
+        try {
+            $event = json_decode($raw, true) ?: [];
+            $type  = $event['data']['attributes']['type'] ?? '';
+            $res   = $event['data']['attributes']['data'] ?? [];
+            $payment = $this->resolvePayment($res);
+
+            if ($type === 'checkout_session.payment.paid') {
+                if (!$payment) {
+                    logger('PayMongo webhook: no payment row for ' . ($res['id'] ?? '?'), 'payments');
+                    return $this->json(['ok' => true, 'note' => 'unknown session']);
+                }
+                if ($payment['status'] === 'paid') {
+                    return $this->json(['ok' => true, 'note' => 'already settled']);
+                }
+                // The checkout session carries the settled payment(s); take the channel
+                // and the real amount from there so an underpayment can't mark it paid.
+                $paid = $res['attributes']['payments'][0]['attributes'] ?? [];
+                $this->db->update('payments', [
+                    'status'     => 'paid',
+                    'method'     => $paid['source']['type'] ?? 'paymongo',
+                    'amount'     => isset($paid['amount']) ? round($paid['amount'] / 100, 2) : $payment['amount'],
+                    'payload'    => $raw,
+                    'updated_at' => date('c'),
+                ], ['id' => $payment['id']]);
+                Folio::reconcile((int) $payment['booking_id']);
+                logger('PayMongo webhook: booking ' . $payment['booking_id'] . ' settled via '
+                    . ($paid['source']['type'] ?? 'paymongo'), 'payments');
+                return $this->json(['ok' => true]);
             }
+
+            if ($type === 'payment.failed') {
+                // A payment resource may not carry the session id; when it can't be
+                // resolved the stale sweep on the admin payments list is the backstop.
+                if ($payment && $payment['status'] === 'pending') {
+                    $this->db->update('payments', [
+                        'status' => 'failed', 'payload' => $raw, 'updated_at' => date('c'),
+                    ], ['id' => $payment['id']]);
+                    logger('PayMongo webhook: booking ' . $payment['booking_id'] . ' payment failed', 'payments');
+                } else {
+                    logger('PayMongo webhook: unresolved payment.failed (' . ($res['id'] ?? '?') . ')', 'payments');
+                }
+                return $this->json(['ok' => true]);
+            }
+        } catch (\Throwable $e) {
+            logger('PayMongo webhook error: ' . $e->getMessage(), 'error');
         }
         return $this->json(['ok' => true]);
+    }
+
+    /** Find the payments row for a webhook resource — by gateway id, else by our reference. */
+    private function resolvePayment(array $resource): ?array
+    {
+        if (!empty($resource['id'])) {
+            $row = $this->db->first('SELECT * FROM payments WHERE external_id = ?', [$resource['id']]);
+            if ($row) return $row;
+        }
+        $ref = $resource['attributes']['reference_number'] ?? null;
+        return $ref ? $this->db->first('SELECT * FROM payments WHERE external_ref = ?', [$ref]) : null;
     }
 
     /** PayPal buyer returns after approving — capture the order. */
@@ -156,9 +220,8 @@ class PaymentController extends Controller
                 'transmission_time' => $_SERVER['HTTP_PAYPAL_TRANSMISSION_TIME'] ?? '',
             ];
             if (!$paypal->verifyWebhookSignature($headers, $event)) {
-                http_response_code(400);
                 logger('PayPal webhook: signature verification FAILED (' . $type . ')', 'payments');
-                return $this->json(['ok' => false, 'error' => 'invalid signature']);
+                return $this->json(['ok' => false, 'error' => 'invalid signature'], 400);
             }
 
             $res = $event['resource'] ?? [];

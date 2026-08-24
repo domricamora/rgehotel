@@ -23,7 +23,7 @@ $s = fn($k, $d = '') => e($settings[$k] ?? $d);
   <div class="panel"><div class="panel__head"><h2>Payments</h2></div><div class="panel__body"><div class="form-grid">
     <div class="field"><label>Online payment fee (%)</label>
       <input type="number" step="0.01" min="0" name="online_fee_percent" value="<?= $s('online_fee_percent','0') ?>">
-      <small class="muted">Surcharge added on top of the total for online card/e-wallet payments (Xendit). Set <code>0</code> to disable. Cash / pay-at-hotel are never charged this fee.</small>
+      <small class="muted">Surcharge added on top of the total for online card/e-wallet payments (PayMongo). Set <code>0</code> to disable. Cash / pay-at-hotel are never charged this fee.</small>
     </div>
   </div></div></div>
 

@@ -157,8 +157,8 @@ CREATE TABLE IF NOT EXISTS booking_rooms (
 CREATE TABLE IF NOT EXISTS payments (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     booking_id  INTEGER NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
-    provider    TEXT NOT NULL,             -- xendit|cash|bank
-    method      TEXT,                       -- card|ewallet|gcash|cash|bank|...
+    provider    TEXT NOT NULL,             -- paymongo|cash|bank (legacy rows: xendit)
+    method      TEXT,                       -- card|gcash|paymaya|grab_pay|qrph|cash|bank|...
     amount      REAL NOT NULL,
     currency    TEXT NOT NULL DEFAULT 'PHP',
     status      TEXT NOT NULL DEFAULT 'pending',  -- pending|paid|failed|expired|refunded
@@ -172,7 +172,7 @@ CREATE INDEX IF NOT EXISTS idx_payments_external ON payments(external_id);
 
 -- In-house folio: incidental charges posted to a booking (room service, minibar,
 -- laundry, spa, amenity usage, transfers, etc.). Settled with the room balance
--- online (Xendit) or as a manual cash entry at the front desk.
+-- online (PayMongo) or as a manual cash entry at the front desk.
 CREATE TABLE IF NOT EXISTS room_charges (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     booking_id   INTEGER NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,

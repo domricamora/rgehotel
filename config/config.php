@@ -46,13 +46,13 @@ $config = [
 
     // Payment gateways — SANDBOX. Swap to live keys in config.local.php before launch.
     'payments' => [
-        'xendit' => [
-            'enabled'        => true,
-            'mode'           => 'sandbox',
-            'secret_key'     => 'xnd_development_REPLACE_ME',
-            'webhook_token'  => 'REPLACE_ME_WEBHOOK_VERIFICATION_TOKEN',
-            'success_url'    => null,      // computed at runtime
-            'failure_url'    => null,
+        'paymongo' => [
+            'enabled'              => true,
+            'mode'                 => 'test',   // test | live — picks the te= / li= signature
+            'secret_key'           => 'sk_test_REPLACE_ME',
+            'webhook_secret'       => 'whsk_REPLACE_ME',
+            // Must also be activated on the PayMongo account or create calls fail.
+            'payment_method_types' => ['card', 'gcash', 'paymaya', 'grab_pay', 'qrph'],
         ],
         'paypal' => [
             'enabled'        => true,

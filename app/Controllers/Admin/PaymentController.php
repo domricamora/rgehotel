@@ -2,11 +2,15 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Models\Folio;
 
 class PaymentController extends Controller
 {
     public function index(): string
     {
+        // Retire abandoned checkouts so the pending count reflects reality.
+        Folio::expireStalePendingPayments();
+
         $payments = $this->db->all(
             'SELECT p.*, b.reference, b.guest_name FROM payments p
              JOIN bookings b ON b.id = p.booking_id ORDER BY p.created_at DESC LIMIT 200'

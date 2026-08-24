@@ -1,6 +1,6 @@
 <?php
 use App\Models\Folio;
-/** @var array $booking @var array $room @var array $charges @var array $summary @var bool $xenditReady */
+/** @var array $booking @var array $room @var array $charges @var array $summary @var bool $gatewayReady */
 ?>
 <?= partial('partials.page-hero', [
     'pageTitle' => 'Your bill',
@@ -59,7 +59,7 @@ use App\Models\Folio;
           <div class="flex" style="justify-content:space-between;align-items:baseline"><strong>Balance due</strong><span class="price"><?= money($summary['balance']) ?></span></div>
 
           <?php if ($summary['balance'] > 0): ?>
-            <?php if (!$xenditReady): ?>
+            <?php if (!$gatewayReady): ?>
               <div class="alert alert-info mt-3" style="font-size:.85rem"><?= icon('check','',14) ?> <strong>Sandbox mode:</strong> live keys aren't configured, so payment is simulated (no real charge).</div>
             <?php endif; ?>
             <?php $ofee = online_fee_amount((float)$summary['balance']); if ($ofee > 0): ?>
@@ -68,9 +68,9 @@ use App\Models\Folio;
             <?php endif; ?>
             <form method="post" action="<?= e(url('/booking/'.$booking['reference'].'/billing/pay')) ?>" class="mt-3">
               <?= csrf_field() ?>
-              <button class="btn btn-teal" type="submit" style="width:100%">Pay <?= money($summary['balance'] + $ofee) ?> with Xendit <?= icon('chevron-right','',16) ?></button>
+              <button class="btn btn-teal" type="submit" style="width:100%">Pay <?= money($summary['balance'] + $ofee) ?> with PayMongo <?= icon('chevron-right','',16) ?></button>
             </form>
-            <p class="muted mt-2" style="font-size:.82rem;text-align:center">Cards, GCash, GrabPay, bank transfer &amp; more. You can also settle at the front desk.</p>
+            <p class="muted mt-2" style="font-size:.82rem;text-align:center">Cards, GCash, Maya, GrabPay &amp; QR Ph. You can also settle at the front desk.</p>
           <?php else: ?>
             <div class="alert alert-success mt-3" style="font-size:.9rem"><?= icon('check','',16) ?> Your bill is fully settled. Thank you!</div>
           <?php endif; ?>

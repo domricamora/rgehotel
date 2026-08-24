@@ -1,4 +1,4 @@
-<?php /** @var array $booking @var array $room @var bool $xenditReady */ ?>
+<?php /** @var array $booking @var array $room @var bool $gatewayReady */ ?>
 <?= partial('partials.page-hero', [
     'pageTitle' => 'Choose how to pay',
     'pageSub'   => 'Booking ' . $booking['reference'],
@@ -10,17 +10,17 @@
     <?= partial('partials.flash') ?>
     <div class="detail-layout">
       <div>
-        <?php if (!$xenditReady): ?>
-          <div class="alert alert-info"><?= icon('check','',16) ?> <strong>Sandbox mode:</strong> live payment keys aren't configured yet, so Xendit will run a simulated sandbox payment (no real charge). Add your API keys in <code>config/config.local.php</code> to enable live processing.</div>
+        <?php if (!$gatewayReady): ?>
+          <div class="alert alert-info"><?= icon('check','',16) ?> <strong>Sandbox mode:</strong> live payment keys aren't configured yet, so PayMongo will run a simulated sandbox payment (no real charge). Add your API keys in <code>config/config.local.php</code> to enable live processing.</div>
         <?php endif; ?>
 
         <div class="grid" style="gap:16px">
-          <!-- Xendit -->
+          <!-- PayMongo -->
           <form method="post" action="<?= e(url('/booking/'.$booking['reference'].'/pay')) ?>">
-            <?= csrf_field() ?><input type="hidden" name="method" value="xendit">
+            <?= csrf_field() ?><input type="hidden" name="method" value="paymongo">
             <button class="card" type="submit" style="width:100%;text-align:left;border:1px solid var(--line);cursor:pointer">
               <div class="card__body" style="flex-direction:row;align-items:center;justify-content:space-between">
-                <div><strong>Pay with Xendit</strong><div class="muted" style="font-size:.9rem">Cards, GCash, GrabPay, bank transfer &amp; more</div></div>
+                <div><strong>Pay with PayMongo</strong><div class="muted" style="font-size:.9rem">Cards, GCash, Maya, GrabPay &amp; QR Ph</div></div>
                 <span class="btn btn-teal btn-sm">Continue <?= icon('chevron-right','',16) ?></span>
               </div>
             </button>

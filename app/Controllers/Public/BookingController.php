@@ -94,10 +94,9 @@ class BookingController extends Controller
             return '';
         }
         $room = RoomType::find((int)$booking['room_type_id']);
-        $xendit = config('payments.xendit');
         return $this->view('public.booking-pay', [
             'active' => '', 'booking' => $booking, 'room' => $room,
-            'xenditReady' => $xendit['enabled'] && !str_contains($xendit['secret_key'], 'REPLACE'),
+            'gatewayReady' => (new \App\Services\PayMongo())->isConfigured(),
             'sandbox' => true,
             'title' => 'Payment — ' . $ref,
             'noindex' => true,

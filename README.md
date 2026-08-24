@@ -1,7 +1,7 @@
 # RGE Hotel & Restaurant Management System
 
 A chic, modern, island-themed hotel website with an online booking engine, sandbox
-payment processing (Xendit), in-house folio billing (room service / amenities / other
+payment processing (PayMongo), in-house folio billing (room service / amenities / other
 room charges with online settlement), and a full role-based management backend.
 
 Beachfront hotel in **Palompon, Leyte** — gateway to **Kalanggaman Island**.
@@ -53,15 +53,29 @@ Sandbox-ready. Add keys in `config/config.local.php` (gitignored):
 ```php
 <?php return [
   'payments' => [
-    'xendit' => ['secret_key' => 'xnd_...', 'webhook_token' => '...'],
-    'paypal' => ['mode' => 'live', 'client_id' => '...', 'client_secret' => '...'],
+    'paymongo' => [
+      'mode'           => 'live',      // test | live
+      'secret_key'     => 'sk_live_...',
+      'webhook_secret' => 'whsk_...',  // shown once, when the webhook is created
+    ],
   ],
 ];
 ```
+Online payments go through PayMongo's hosted **Checkout Sessions** (`/v2/checkout_sessions`):
+the guest is redirected to `checkout.paymongo.com` and the payment is settled by webhook.
 Until real keys are set, the pay page runs a **simulated** sandbox payment (no charge)
-so the booking flow is fully testable. Xendit webhook: `/payment/xendit/webhook`.
-PayPal buyer return (capture): `/payment/paypal/return`. Set PayPal `mode` to `live`
-with live REST app credentials to take real payments.
+so the booking flow is fully testable.
+
+PayMongo webhook: `/payment/paymongo/webhook` — register it in the PayMongo dashboard
+subscribed to **both** `checkout_session.payment.paid` (settlement) and `payment.failed`.
+Requests are authenticated by the `Paymongo-Signature` header (HMAC-SHA256 of
+`"{timestamp}.{raw body}"` keyed with the webhook secret); `mode` selects the `te=`/`li=`
+component. Enabled channels live in `payments.paymongo.payment_method_types` and must also
+be activated on the PayMongo account. Note PayMongo amounts are **centavos**, and card
+payments have a ₱100 minimum (card is dropped automatically below that).
+
+Abandoned checkouts are marked `expired` after 24h whenever the admin payments list loads
+(`Folio::expireStalePendingPayments()`).
 
 Guests can settle their in-house folio (room charges added by the front desk) online
 at `/booking/{ref}/billing`; staff post and settle charges from the booking detail page.

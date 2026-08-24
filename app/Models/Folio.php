@@ -148,6 +148,23 @@ class Folio
         }
     }
 
+    /**
+     * Retire abandoned gateway checkouts. PayMongo checkout sessions expire after
+     * 24h, so a row still 'pending' past that will never settle — mark it 'expired'
+     * rather than leaving it to accumulate in the ledger. Safe to call repeatedly.
+     *
+     * The cutoff uses gmdate(): payments.created_at comes from SQLite's
+     * datetime('now') default, which is UTC, while PHP runs in Asia/Manila.
+     */
+    public static function expireStalePendingPayments(int $hours = 24): void
+    {
+        self::db()->run(
+            "UPDATE payments SET status='expired', updated_at=?
+              WHERE provider='paymongo' AND status='pending' AND created_at < ?",
+            [date('c'), gmdate('Y-m-d H:i:s', time() - $hours * 3600)]
+        );
+    }
+
     /** Record a manual cash/on-site settlement against a booking, then reconcile. */
     public static function recordCashSettlement(int $bookingId, float $amount, string $method = 'cash', ?int $userId = null): void
     {
