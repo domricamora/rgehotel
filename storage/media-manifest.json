@@ -1,103 +1,103 @@
 {
     "rooms": {
         "twin-room": [
-            "rooms\/twin-room\/1",
-            "rooms\/twin-room\/2",
-            "rooms\/twin-room\/3",
-            "rooms\/twin-room\/4",
-            "rooms\/twin-room\/5"
+            "rooms/twin-room/1",
+            "rooms/twin-room/2",
+            "rooms/twin-room/3",
+            "rooms/twin-room/4",
+            "rooms/twin-room/5"
         ],
         "double-room": [
-            "rooms\/double-room\/1",
-            "rooms\/double-room\/2",
-            "rooms\/double-room\/3",
-            "rooms\/double-room\/4"
+            "rooms/double-room/1",
+            "rooms/double-room/2",
+            "rooms/double-room/3",
+            "rooms/double-room/4"
         ],
         "double-or-twin": [
-            "rooms\/double-or-twin\/1",
-            "rooms\/double-or-twin\/2",
-            "rooms\/double-or-twin\/3",
-            "rooms\/double-or-twin\/4"
+            "rooms/double-or-twin/1",
+            "rooms/double-or-twin/2",
+            "rooms/double-or-twin/3",
+            "rooms/double-or-twin/4"
         ],
         "triple-room": [
-            "rooms\/triple-room\/1",
-            "rooms\/triple-room\/2",
-            "rooms\/triple-room\/3",
-            "rooms\/triple-room\/4",
-            "rooms\/triple-room\/5"
+            "rooms/triple-room/1",
+            "rooms/triple-room/2",
+            "rooms/triple-room/3",
+            "rooms/triple-room/4",
+            "rooms/triple-room/5"
         ],
         "family-room": [
-            "rooms\/family-room\/1",
-            "rooms\/family-room\/2",
-            "rooms\/family-room\/3",
-            "rooms\/family-room\/4"
+            "rooms/family-room/1",
+            "rooms/family-room/2",
+            "rooms/family-room/3",
+            "rooms/family-room/4"
         ],
         "suite": [
-            "rooms\/suite\/1",
-            "rooms\/suite\/2",
-            "rooms\/suite\/3",
-            "rooms\/suite\/4"
+            "rooms/suite/1",
+            "rooms/suite/2",
+            "rooms/suite/3",
+            "rooms/suite/4"
         ],
         "barkada-room-a": [
-            "rooms\/barkada-room-a\/1",
-            "rooms\/barkada-room-a\/2",
-            "rooms\/barkada-room-a\/3"
+            "rooms/barkada-room-a/1",
+            "rooms/barkada-room-a/2",
+            "rooms/barkada-room-a/3"
         ],
         "barkada-room-b": [
-            "rooms\/barkada-room-b\/1",
-            "rooms\/barkada-room-b\/2"
+            "rooms/barkada-room-b/1",
+            "rooms/barkada-room-b/2"
         ],
         "super-family-room": [
-            "rooms\/family-room\/1",
-            "rooms\/family-room\/2",
-            "rooms\/family-room\/3",
-            "rooms\/family-room\/4"
+            "rooms/family-room/1",
+            "rooms/family-room/2",
+            "rooms/family-room/3",
+            "rooms/family-room/4"
         ],
         "full-house": [
-            "rooms\/full-house\/1",
-            "rooms\/full-house\/2",
-            "rooms\/full-house\/3",
-            "rooms\/full-house\/4",
-            "rooms\/full-house\/5",
-            "rooms\/full-house\/6"
+            "rooms/full-house/1",
+            "rooms/full-house/2",
+            "rooms/full-house/3",
+            "rooms/full-house/4",
+            "rooms/full-house/5",
+            "rooms/full-house/6"
         ]
     },
     "amenities": [
-        "amenities\/1",
-        "amenities\/2",
-        "amenities\/3",
-        "amenities\/4",
-        "amenities\/5",
-        "amenities\/6",
-        "amenities\/7",
-        "amenities\/8",
-        "amenities\/9",
-        "amenities\/10",
-        "amenities\/11",
-        "amenities\/12"
+        "amenities/1",
+        "amenities/2",
+        "amenities/3",
+        "amenities/4",
+        "amenities/5",
+        "amenities/6",
+        "amenities/7",
+        "amenities/8",
+        "amenities/9",
+        "amenities/10",
+        "amenities/11",
+        "amenities/12"
     ],
     "services": {
-        "kalanggaman-island-hopping": "services\/kalanggaman-island-hopping",
-        "leyte-island-tour": "services\/leyte-island-tour",
-        "scuba-diving": "services\/scuba-diving",
-        "water-sports": "services\/water-sports",
-        "airport-transfer": "services\/airport-transfer",
-        "car-rental": "services\/car-rental"
+        "kalanggaman-island-hopping": "services/kalanggaman-island-hopping",
+        "leyte-island-tour": "services/leyte-island-tour",
+        "scuba-diving": "services/scuba-diving",
+        "water-sports": "services/water-sports",
+        "airport-transfer": "services/airport-transfer",
+        "car-rental": "services/car-rental"
     },
     "general": {
-        "hero-island": "general\/hero-island",
-        "beach": "general\/beach",
-        "kalanggaman": "general\/kalanggaman",
-        "aerial": "general\/aerial",
-        "sunset": "general\/sunset",
-        "offers-hero": "general\/offers-hero",
-        "about": "general\/about",
-        "services-hero": "general\/services-hero"
+        "hero-island": "general/hero-island",
+        "beach": "general/beach",
+        "kalanggaman": "general/kalanggaman",
+        "aerial": "general/aerial",
+        "sunset": "general/sunset",
+        "offers-hero": "general/offers-hero",
+        "about": "general/about",
+        "services-hero": "general/services-hero"
     },
-    "logo": "general\/logo",
+    "logo": "general/logo",
     "offers": {
-        "early-bird": "offers\/early-bird",
-        "stay-3-pay-2": "offers\/stay-3-pay-2",
-        "summer-splash": "offers\/summer-splash"
+        "early-bird": "offers/early-bird",
+        "stay-3-pay-2": "offers/stay-3-pay-2",
+        "summer-splash": "offers/summer-splash"
     }
 }
