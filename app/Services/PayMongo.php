@@ -9,7 +9,7 @@ namespace App\Services;
  */
 class PayMongo
 {
-    private const API = 'https://api.paymongo.com/v2/checkout_sessions';
+    private const API = 'https://api.paymongo.com/v1/checkout_sessions';
 
     /** Card payments are rejected below this amount; e-wallets have no floor. */
     private const CARD_MINIMUM = 100.00;
@@ -79,13 +79,22 @@ class PayMongo
         return (int) round($amount * 100);
     }
 
+    /** Return only a valid hosted checkout URL from a successful API response. */
+    public static function checkoutUrl(array $session): ?string
+    {
+        $url = $session['attributes']['checkout_url'] ?? null;
+        if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL)) return null;
+        $parts = parse_url($url);
+        if (($parts['scheme'] ?? '') !== 'https' || empty($parts['host'])) return null;
+        if (!in_array(strtolower($parts['host']), ['checkout.paymongo.com', 'checkout.paymongo.com.ph'], true)) return null;
+        return $url;
+    }
+
     /**
      * Verify the Paymongo-Signature header against the raw request body.
-     * Header format: t=<unix>,te=<test signature>,li=<live signature>.
-     *
-     * The signed string is documented as "{t}.{raw body}", but PayMongo's own
-     * best-practices sample HMACs the raw body alone — so both forms are accepted
-     * (same secret either way) and the matching variant is logged. Never throws.
+    * Header format: t=<unix>,te=<test signature>,li=<live signature>.
+    * The signed string is {timestamp}.{raw body}; reject stale requests and
+    * signatures from the other environment.
      */
     public function verifySignature(string $rawBody, string $header): bool
     {
@@ -100,28 +109,11 @@ class PayMongo
         $timestamp = $parts['t'] ?? '';
         $expected  = $this->isLive() ? 'li' : 'te';
 
-        $candidates = [
-            'timestamped' => hash_hmac('sha256', $timestamp . '.' . $rawBody, $secret),
-            'body-only'   => hash_hmac('sha256', $rawBody, $secret),
-        ];
-
-        foreach (['te', 'li'] as $field) {
-            $given = (string) ($parts[$field] ?? '');
-            if ($given === '') continue;
-            foreach ($candidates as $variant => $computed) {
-                if (hash_equals($computed, $given)) {
-                    if ($field !== $expected) {
-                        logger('PayMongo webhook: signature matched ' . $field
-                            . ' but mode is ' . ($this->cfg['mode'] ?? 'test'), 'payments');
-                    }
-                    if ($variant !== 'timestamped') {
-                        logger('PayMongo webhook: signature matched the body-only variant', 'payments');
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
+        if (!ctype_digit($timestamp) || abs(time() - (int) $timestamp) > 300) return false;
+        $given = (string) ($parts[$expected] ?? '');
+        if ($given === '') return false;
+        $computed = hash_hmac('sha256', $timestamp . '.' . $rawBody, $secret);
+        return hash_equals($computed, $given);
     }
 
     /** Card has a floor, so drop it for small folio balances rather than fail the call. */
@@ -147,8 +139,9 @@ class PayMongo
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST  => $method,
             CURLOPT_POSTFIELDS     => json_encode($body),
-            CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Accept: application/json'],
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Accept: application/json', 'Authorization: Basic ' . base64_encode($this->cfg['secret_key'] . ':')],
             CURLOPT_USERPWD        => $this->cfg['secret_key'] . ':',
+            CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_TIMEOUT        => 30,
         ]);
         if (is_file($ca)) curl_setopt($ch, CURLOPT_CAINFO, $ca);

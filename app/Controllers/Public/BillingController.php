@@ -63,8 +63,12 @@ class BillingController extends Controller
                     site_url('/booking/' . $ref . '/billing'),
                     site_url('/booking/' . $ref . '/billing')
                 );
+                $checkoutUrl = PayMongo::checkoutUrl($session);
+                if ($checkoutUrl === null) {
+                    throw new \RuntimeException('PayMongo returned no valid checkout URL');
+                }
                 $this->recordPayment($booking, $charge, 'pending', $session['id'] ?? null, $reference, $session);
-                redirect($session['attributes']['checkout_url']);
+                redirect($checkoutUrl);
                 return '';
             }
             // Sandbox: no live keys configured — simulate a successful charge.

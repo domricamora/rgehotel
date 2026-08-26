@@ -33,9 +33,13 @@ class PaymentController extends Controller
                         site_url('/booking/' . $booking['reference'] . '/confirmation'),
                         site_url('/booking/' . $booking['reference'] . '/pay')
                     );
+                    $checkoutUrl = PayMongo::checkoutUrl($session);
+                    if ($checkoutUrl === null) {
+                        throw new \RuntimeException('PayMongo returned no valid checkout URL');
+                    }
                     $this->recordPayment($booking, 'paymongo', 'pending', $session['id'] ?? null,
                         $booking['reference'], $session, $charge);
-                    redirect($session['attributes']['checkout_url']);
+                    redirect($checkoutUrl);
                     return '';
                 }
                 return $this->simulate($booking, 'paymongo');
@@ -127,10 +131,16 @@ class PaymentController extends Controller
                 // The checkout session carries the settled payment(s); take the channel
                 // and the real amount from there so an underpayment can't mark it paid.
                 $paid = $res['attributes']['payments'][0]['attributes'] ?? [];
+                $paidAmount = isset($paid['amount']) ? (int) $paid['amount'] : 0;
+                $expectedAmount = PayMongo::toCentavos((float) $payment['amount']);
+                if ($paidAmount !== $expectedAmount) {
+                    logger('PayMongo webhook: amount mismatch for payment ' . $payment['id'], 'payments');
+                    return $this->json(['ok' => false, 'error' => 'amount mismatch'], 400);
+                }
                 $this->db->update('payments', [
                     'status'     => 'paid',
                     'method'     => $paid['source']['type'] ?? 'paymongo',
-                    'amount'     => isset($paid['amount']) ? round($paid['amount'] / 100, 2) : $payment['amount'],
+                    'amount'     => round($paidAmount / 100, 2),
                     'payload'    => $raw,
                     'updated_at' => date('c'),
                 ], ['id' => $payment['id']]);

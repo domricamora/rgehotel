@@ -123,4 +123,17 @@
     }
     ci.addEventListener('change', sync); sync();
   }
+
+  // Give payment submits immediate feedback while the server creates a hosted session.
+  document.querySelectorAll('form[action*="/pay"]').forEach(function (form) {
+    form.addEventListener('submit', function () {
+      var button = form.querySelector('button[type="submit"]');
+      if (!button) return;
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      button.style.opacity = '0.65';
+      var label = button.querySelector('.btn');
+      if (label) label.textContent = 'Connecting to PayMongo...';
+    });
+  });
 })();
