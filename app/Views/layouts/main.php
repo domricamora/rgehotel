@@ -12,6 +12,7 @@ $nav = [
     'offers'         => ['Offers', url('/offers')],
     'reviews'        => ['Reviews', url('/reviews')],
     'about'          => ['About', url('/about')],
+    'resort'         => ['The Resort', url('/the-resort')],
     'contact'        => ['Contact', url('/contact')],
 ];
 // Show the Restaurant link only when the restaurant page is published.
@@ -103,6 +104,7 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
         <h2>Hotel</h2>
         <ul class="footer-links">
           <li><a href="<?= e(url('/about')) ?>">About</a></li>
+          <li><a href="<?= e(url('/the-resort')) ?>">The Resort</a></li>
           <li><a href="<?= e(url('/reviews')) ?>">Reviews</a></li>
           <li><a href="<?= e(url('/contact')) ?>">Contact</a></li>
         </ul>

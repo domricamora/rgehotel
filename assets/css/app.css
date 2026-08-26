@@ -220,6 +220,30 @@ p { color: var(--slate); }
 .split img { border-radius: var(--radius-lg); box-shadow: var(--shadow); width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 @media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
 
+/* Resort showcase */
+.resort-intro__grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(30px, 8vw, 120px); align-items: end; }
+.resort-intro__grid h2 { max-width: 9ch; }
+.resort-intro__grid p { max-width: 55ch; font-size: 1.12rem; line-height: 1.8; color: var(--slate); }
+.resort-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 20px; }
+.resort-gallery__item--feature { grid-column: 1 / -1; display: grid; grid-template-columns: 1.45fr .55fr; gap: 28px; align-items: end; }
+.resort-gallery__item a { display: block; overflow: hidden; background: var(--teal-soft); }
+.resort-gallery__item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s ease; }
+.resort-gallery__item--feature img { aspect-ratio: 16 / 8; }
+.resort-gallery__item a:hover img { transform: scale(1.035); }
+.resort-gallery__copy { padding-top: 14px; }
+.resort-gallery__number { color: var(--coral-deep); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
+.resort-gallery__copy h3 { font-size: 1.2rem; margin-top: 7px; }
+.resort-gallery__copy p { color: var(--muted); font-size: .92rem; margin-top: 5px; max-width: 34ch; }
+.resort-close { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; }
+.resort-close h2 { max-width: 12ch; }
+.resort-close p { max-width: 42ch; }
+@media (max-width: 700px) {
+  .resort-intro__grid, .resort-close { grid-template-columns: 1fr; gap: 18px; }
+  .resort-gallery { grid-template-columns: 1fr; gap: 34px; }
+  .resort-gallery__item--feature { grid-column: auto; display: block; }
+  .resort-gallery__item--feature img { aspect-ratio: 4 / 3; }
+}
+
 /* Section tones */
 .tone-teal { background: var(--teal-soft); }
 .tone-sand { background: var(--sand); }

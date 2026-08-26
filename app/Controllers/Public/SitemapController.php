@@ -26,6 +26,7 @@ class SitemapController extends Controller
         $add('/offers', '0.7', 'weekly');
         $add('/reviews', '0.6', 'weekly');
         $add('/about', '0.5', 'monthly');
+        $add('/the-resort', '0.7', 'monthly');
         $add('/contact', '0.5', 'monthly');
         if (Setting::get('restaurant_published', '0') === '1') {
             $add('/restaurant', '0.6', 'weekly');

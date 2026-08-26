@@ -24,6 +24,7 @@ return function (Router $r) {
     $r->post('/reviews',                 'Public\ReviewController@store');
 
     $r->get('/about',                    'Public\PageController@about');
+    $r->get('/the-resort',              'Public\PageController@resort');
     $r->get('/contact',                  'Public\ContactController@index');
     $r->post('/contact',                 'Public\ContactController@store');
     $r->get('/restaurant',               'Public\RestaurantController@index');
