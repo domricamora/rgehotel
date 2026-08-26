@@ -66,6 +66,13 @@ class App
             return;
         }
 
+        $canonicalHost = parse_url((string) (self::config()['app']['url'] ?? ''), PHP_URL_HOST);
+        if ($canonicalHost && strcasecmp($host, 'www.' . $canonicalHost) === 0) {
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
+            header('Location: https://' . $canonicalHost . $uri, true, 301);
+            exit;
+        }
+
         $proto  = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
         $secure = (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off')
             || (($_SERVER['SERVER_PORT'] ?? '') == 443)
