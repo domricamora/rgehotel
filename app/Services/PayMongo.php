@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use App\Models\Setting;
+
 /**
  * PayMongo hosted Checkout Sessions (https://docs.paymongo.com).
  * Test mode uses sk_test_... secret keys, live mode sk_live_....
@@ -19,6 +21,11 @@ class PayMongo
     public function __construct()
     {
         $this->cfg = config('payments.paymongo');
+        $enabled = Setting::get('paymongo_enabled');
+        $this->cfg['enabled'] = $enabled === null ? (bool) ($this->cfg['enabled'] ?? false) : $enabled === '1';
+        $this->cfg['mode'] = Setting::get('paymongo_mode', $this->cfg['mode'] ?? 'test');
+        $this->cfg['secret_key'] = Setting::get('paymongo_secret_key', $this->cfg['secret_key'] ?? '');
+        $this->cfg['webhook_secret'] = Setting::get('paymongo_webhook_secret', $this->cfg['webhook_secret'] ?? '');
     }
 
     public function isConfigured(): bool

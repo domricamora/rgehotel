@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use App\Models\Setting;
+
 /**
  * PayPal Orders v2 API. Sandbox vs live selected by config mode.
  */
@@ -12,6 +14,12 @@ class PayPal
     public function __construct()
     {
         $this->cfg = config('payments.paypal');
+        $enabled = Setting::get('paypal_enabled');
+        $this->cfg['enabled'] = $enabled === null ? (bool) ($this->cfg['enabled'] ?? false) : $enabled === '1';
+        $this->cfg['mode'] = Setting::get('paypal_mode', $this->cfg['mode'] ?? 'sandbox');
+        $this->cfg['client_id'] = Setting::get('paypal_client_id', $this->cfg['client_id'] ?? '');
+        $this->cfg['client_secret'] = Setting::get('paypal_client_secret', $this->cfg['client_secret'] ?? '');
+        $this->cfg['webhook_id'] = Setting::get('paypal_webhook_id', $this->cfg['webhook_id'] ?? '');
         $this->base = ($this->cfg['mode'] ?? 'sandbox') === 'live'
             ? 'https://api-m.paypal.com'
             : 'https://api-m.sandbox.paypal.com';

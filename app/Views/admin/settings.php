@@ -27,6 +27,23 @@ $s = fn($k, $d = '') => e($settings[$k] ?? $d);
     </div>
   </div></div></div>
 
+  <?php if (!empty($credentialStatus)): ?>
+  <div class="panel"><div class="panel__head"><h2>Gateway API credentials</h2></div><div class="panel__body">
+    <p class="muted" style="max-width:70ch">Only the super admin can access this section. Existing secrets are never shown. Leave a secret field blank to keep its current value.</p>
+    <div class="form-grid mt-3">
+      <div class="field"><label>PayMongo enabled</label><label class="checkbox"><input type="checkbox" name="paymongo_enabled" value="1" <?= ($settings['paymongo_enabled'] ?? '1') === '1' ? 'checked' : '' ?>> <span>Enable PayMongo</span></label></div>
+      <div class="field"><label>PayMongo mode</label><select name="paymongo_mode"><option value="test" <?= ($settings['paymongo_mode'] ?? 'test') === 'test' ? 'selected' : '' ?>>Test</option><option value="live" <?= ($settings['paymongo_mode'] ?? '') === 'live' ? 'selected' : '' ?>>Live</option></select></div>
+      <div class="field full"><label>PayMongo secret key</label><input type="password" name="paymongo_secret_key" value="" autocomplete="new-password" placeholder="<?= !empty($credentialStatus['paymongo']) ? 'Configured - enter a replacement to change' : 'sk_test_... or sk_live_...' ?>"><small class="muted">Status: <?= !empty($credentialStatus['paymongo']) ? 'configured' : 'not configured' ?>.</small></div>
+      <div class="field full"><label>PayMongo webhook secret</label><input type="password" name="paymongo_webhook_secret" value="" autocomplete="new-password" placeholder="<?= !empty($credentialStatus['paymongo_webhook']) ? 'Configured - enter a replacement to change' : 'whsk_...' ?>"><small class="muted">Status: <?= !empty($credentialStatus['paymongo_webhook']) ? 'configured' : 'not configured' ?>.</small></div>
+      <div class="field"><label>PayPal enabled</label><label class="checkbox"><input type="checkbox" name="paypal_enabled" value="1" <?= ($settings['paypal_enabled'] ?? '0') === '1' ? 'checked' : '' ?>> <span>Enable PayPal</span></label></div>
+      <div class="field"><label>PayPal mode</label><select name="paypal_mode"><option value="sandbox" <?= ($settings['paypal_mode'] ?? 'sandbox') === 'sandbox' ? 'selected' : '' ?>>Sandbox</option><option value="live" <?= ($settings['paypal_mode'] ?? '') === 'live' ? 'selected' : '' ?>>Live</option></select></div>
+      <div class="field full"><label>PayPal client ID</label><input type="password" name="paypal_client_id" value="" autocomplete="new-password" placeholder="<?= !empty($credentialStatus['paypal']) ? 'Configured - enter a replacement to change' : 'Client ID' ?>"><small class="muted">Status: <?= !empty($credentialStatus['paypal']) ? 'configured' : 'not configured' ?>.</small></div>
+      <div class="field full"><label>PayPal client secret</label><input type="password" name="paypal_client_secret" value="" autocomplete="new-password" placeholder="Client secret"></div>
+      <div class="field full"><label>PayPal webhook ID</label><input type="password" name="paypal_webhook_id" value="" autocomplete="new-password" placeholder="<?= !empty($credentialStatus['paypal_webhook']) ? 'Configured - enter a replacement to change' : 'Webhook ID' ?>"><small class="muted">Status: <?= !empty($credentialStatus['paypal_webhook']) ? 'configured' : 'not configured' ?>.</small></div>
+    </div>
+  </div></div>
+  <?php endif; ?>
+
   <div class="panel"><div class="panel__head"><h2>Features</h2></div><div class="panel__body">
     <label class="checkbox"><input type="checkbox" name="restaurant_published" value="1" <?= ($settings['restaurant_published']??'0')==='1'?'checked':'' ?>> <span>Publish restaurant page on live site</span></label>
   </div></div>
