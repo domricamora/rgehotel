@@ -2,6 +2,8 @@
 /** Search/booking bar. @var string|null $check_in @var string|null $check_out */
 $ci = $check_in ?? '';
 $co = $check_out ?? '';
+$selectedGuests = max(1, min(10, (int) ($guests ?? 1)));
+$selectedRooms = max(1, min(5, (int) ($rooms ?? 1)));
 ?>
 <form class="book-bar reveal" method="get" action="<?= e(url('/accommodations')) ?>">
   <div class="field">
@@ -15,13 +17,13 @@ $co = $check_out ?? '';
   <div class="field">
     <label for="bb-guests">Guests</label>
     <select id="bb-guests" name="guests">
-      <?php for ($i = 1; $i <= 10; $i++): ?><option value="<?= $i ?>"><?= $i ?> guest<?= $i > 1 ? 's' : '' ?></option><?php endfor; ?>
+      <?php for ($i = 1; $i <= 10; $i++): ?><option value="<?= $i ?>"<?= $i === $selectedGuests ? ' selected' : '' ?>><?= $i ?> guest<?= $i > 1 ? 's' : '' ?></option><?php endfor; ?>
     </select>
   </div>
   <div class="field">
     <label for="bb-rooms">Rooms</label>
     <select id="bb-rooms" name="rooms">
-      <?php for ($i = 1; $i <= 5; $i++): ?><option value="<?= $i ?>"><?= $i ?> room<?= $i > 1 ? 's' : '' ?></option><?php endfor; ?>
+      <?php for ($i = 1; $i <= 5; $i++): ?><option value="<?= $i ?>"<?= $i === $selectedRooms ? ' selected' : '' ?>><?= $i ?> room<?= $i > 1 ? 's' : '' ?></option><?php endfor; ?>
     </select>
   </div>
   <div class="field field--submit">

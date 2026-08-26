@@ -1,6 +1,16 @@
-<?php /** @var array $room */ ?>
+<?php
+/** @var array $room */
+$bookingQuery = array_filter([
+  'check_in' => $check_in ?? null,
+  'check_out' => $check_out ?? null,
+  'guests' => $guests ?? null,
+  'rooms' => $rooms ?? null,
+], static fn($value) => $value !== null && $value !== '');
+$roomUrl = url('/accommodations/' . $room['slug'])
+  . ($bookingQuery ? '?' . http_build_query($bookingQuery) : '');
+?>
 <article class="card reveal">
-  <a class="card__media" href="<?= e(url('/accommodations/' . $room['slug'])) ?>">
+  <a class="card__media" href="<?= e($roomUrl) ?>">
     <?= img_tag($room['cover'] ?? null, $room['name'], '', '(max-width:640px) 100vw, 33vw') ?>
     <?php if (!empty($room['is_featured'])): ?><span class="card__badge">Featured</span><?php endif; ?>
     <?php if (isset($room['available'])): ?>
@@ -15,11 +25,11 @@
       <?php if ($room['beds']): ?><span><?= icon('bed','',15) ?> <?= e($room['beds']) ?></span><?php endif; ?>
       <?php if ($room['view']): ?><span><?= icon('waves','',15) ?> <?= e($room['view']) ?></span><?php endif; ?>
     </div>
-    <h3><a href="<?= e(url('/accommodations/' . $room['slug'])) ?>"><?= e($room['name']) ?></a></h3>
+    <h3><a href="<?= e($roomUrl) ?>"><?= e($room['name']) ?></a></h3>
     <p style="font-size:.95rem"><?= e($room['summary']) ?></p>
     <div class="card__foot">
       <div class="price"><?= money($room['base_price']) ?> <small>/ night</small></div>
-      <a class="btn btn-outline btn-sm" href="<?= e(url('/accommodations/' . $room['slug'])) ?>">View <?= icon('chevron-right','',16) ?></a>
+      <a class="btn btn-outline btn-sm" href="<?= e($roomUrl) ?>">View <?= icon('chevron-right','',16) ?></a>
     </div>
   </div>
 </article>

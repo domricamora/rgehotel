@@ -25,6 +25,7 @@ class RoomController extends Controller
             'rooms'  => $rooms,
             'check_in' => $in, 'check_out' => $out,
             'guests' => $this->input('guests'),
+            'selectedRooms' => $this->input('rooms'),
             'title'  => 'Accommodations — RGE Hotel, Kalanggaman Island, Leyte',
             'metaDescription' => 'Browse rooms and suites at RGE Hotel — from cosy doubles to family rooms and group barkada rooms, steps from the beach near Kalanggaman Island.',
         ]);
@@ -41,6 +42,10 @@ class RoomController extends Controller
         return $this->view('public.room-show', [
             'active'    => 'accommodations',
             'room'      => $room,
+            'check_in'  => $this->input('check_in'),
+            'check_out' => $this->input('check_out'),
+            'guests'    => $this->input('guests', $this->input('adults', 1)),
+            'rooms'     => $this->input('rooms', 1),
             'photos'    => $photos,
             'amenities' => RoomType::amenities((int)$room['id']),
             'packages'  => RoomType::packages((int)$room['id']),

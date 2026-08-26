@@ -13,10 +13,21 @@
       <div class="alert alert-info"><?= icon('calendar','',16) ?> Showing availability for <strong><?= e(date('M j, Y', strtotime($check_in))) ?></strong> – <strong><?= e(date('M j, Y', strtotime($check_out))) ?></strong>.</div>
     <?php endif; ?>
 
-    <div class="mb-3"><?= partial('partials.book-bar', ['check_in' => $check_in ?? '', 'check_out' => $check_out ?? '']) ?></div>
+    <div class="mb-3"><?= partial('partials.book-bar', [
+      'check_in' => $check_in ?? '',
+      'check_out' => $check_out ?? '',
+      'guests' => $guests ?? '',
+      'rooms' => $selectedRooms ?? '',
+    ]) ?></div>
 
     <div class="grid grid-3 mt-4">
-      <?php foreach ($rooms as $room) echo partial('partials.room-card', ['room' => $room]); ?>
+      <?php foreach ($rooms as $room) echo partial('partials.room-card', [
+        'room' => $room,
+        'check_in' => $check_in ?? '',
+        'check_out' => $check_out ?? '',
+        'guests' => $guests ?? '',
+        'rooms' => $selectedRooms ?? '',
+      ]); ?>
     </div>
   </div>
 </section>

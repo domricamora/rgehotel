@@ -1,7 +1,9 @@
 <?php
 /** @var array $room @var array $photos @var array $amenities @var array $packages @var array $offers @var array $reviews */
-$defaultIn = date('Y-m-d', strtotime('+7 days'));
-$defaultOut = date('Y-m-d', strtotime('+9 days'));
+$defaultIn = $check_in ?? date('Y-m-d', strtotime('+7 days'));
+$defaultOut = $check_out ?? date('Y-m-d', strtotime('+9 days'));
+$defaultRooms = max(1, (int) ($rooms ?? 1));
+$defaultAdults = max(1, (int) ($guests ?? 1));
 ?>
 <?= partial('partials.page-hero', [
     'pageTitle' => $room['name'],
@@ -114,8 +116,8 @@ $roomLd = [
             <div class="field"><label>Check-out</label><input type="date" name="check_out" value="<?= e($defaultOut) ?>" required></div>
           </div>
           <div class="field-row">
-            <div class="field"><label>Adults</label><select name="adults"><?php for($i=1;$i<=$room['max_occupancy'];$i++) echo "<option>$i</option>"; ?></select></div>
-            <div class="field"><label>Rooms</label><select name="rooms"><?php for($i=1;$i<=min(5,$room['total_units']);$i++) echo "<option>$i</option>"; ?></select></div>
+            <div class="field"><label>Adults</label><select name="adults"><?php for($i=1;$i<=$room['max_occupancy'];$i++){$selected=$i==min($defaultAdults,$room['max_occupancy'])?' selected':'';echo "<option$selected>$i</option>";} ?></select></div>
+            <div class="field"><label>Rooms</label><select name="rooms"><?php for($i=1;$i<=min(5,$room['total_units']);$i++){$selected=$i==min($defaultRooms,min(5,$room['total_units']))?' selected':'';echo "<option$selected>$i</option>";} ?></select></div>
           </div>
           <button class="btn btn-primary btn-block" type="submit"><?= icon('calendar') ?> Check Availability</button>
           <p class="muted center" style="font-size:.8rem;margin-top:12px">You won't be charged yet</p>
