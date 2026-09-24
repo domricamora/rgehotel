@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash"
+      "Bash",
+      "Read(//c/Users/Nick/Documents/projects/rge/recent photos/RGE HOTEL AND RESORT/**)"
     ]
   }
 }

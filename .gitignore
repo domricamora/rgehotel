@@ -30,3 +30,6 @@ desktop.ini
 
 # Hero video (deployed via FTP, too large for git)
 assets/video/*.mp4
+
+# Playwright MCP browser artifacts
+.playwright-mcp/

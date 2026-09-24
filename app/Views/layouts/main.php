@@ -23,6 +23,10 @@ if ($restaurantPublished) {
          + array_slice($nav, 3, null, true);
 }
 $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
+// Messenger chat link for the Page (m.me accepts the Page username or its numeric id).
+$fbHandle = preg_match('~[?&]id=(\d+)~', (string) $fb, $m) ? $m[1]
+          : (preg_match('~facebook\.com/([^/?#]+)~i', (string) $fb, $m) ? $m[1] : '');
+$messenger = $fbHandle ? 'https://m.me/' . rawurlencode($fbHandle) : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,6 +128,10 @@ $fb = Setting::get('facebook_url'); $ig = Setting::get('instagram_url');
     </div>
   </div>
 </footer>
+
+<?php if ($messenger): ?>
+<a class="chat-fab" href="<?= e($messenger) ?>" target="_blank" rel="noopener" aria-label="Chat with RGE Hotel on Messenger"><?= icon('message-circle','',22) ?><span>Chat with us</span></a>
+<?php endif; ?>
 
 <script src="<?= e(asset('js/app.js')) ?>" defer></script>
 </body>
