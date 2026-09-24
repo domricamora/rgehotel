@@ -59,7 +59,7 @@ $rooms = [
     'double-or-twin'  => ['IMG_4082.jpg', 'IMG_4084.jpg', 'IMG_4086.jpg', 'IMG_4091.jpg'], // twin configuration
     'triple-room'     => ['IMG_4211.jpg', 'IMG_4212.jpg', 'IMG_4218.jpg', 'IMG_4219.jpg', 'IMG_4223.jpg'], // three beds
     'family-room'     => ['IMG_4270.jpg', 'IMG_4271.jpg', 'IMG_4276.jpg', 'IMG_4278.jpg'], // family layout
-    'suite'           => ['IMG_4158.jpg', 'IMG_4163.jpg', 'IMG_4164.jpg', 'IMG_4165.jpg'], // larger queen room
+    'suite'           => ['IMG_4311.jpg', 'IMG_4163.jpg', 'IMG_4164.jpg', 'IMG_4165.jpg'], // larger queen room
     // The supplied set does not include a clearly identifiable 6- or 8-bed room,
     // so the Barkada galleries are deliberately left unchanged.
     'full-house'      => ['IMG_3889.jpg', 'IMG_3895.jpg', 'IMG_3896.jpg', 'IMG_3901.jpg', 'IMG_3924.jpg', 'IMG_3960.jpg'],
